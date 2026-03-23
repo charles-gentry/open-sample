@@ -3,23 +3,27 @@ import Map, { Source, Layer } from 'react-map-gl/maplibre';
 import type { MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { usePlanStore } from '../../stores/planStore';
-import { usePolygonDraw } from '../../hooks/usePolygonDraw';
 
-export default function PlanMap() {
+interface PlanMapProps {
+  isDrawing: boolean;
+  handleClick: (lngLat: { lng: number; lat: number }) => void;
+  finishDrawing: () => void;
+  verticesGeoJson: GeoJSON.FeatureCollection;
+  lineGeoJson: GeoJSON.FeatureCollection;
+  previewPolygonGeoJson: GeoJSON.FeatureCollection;
+  polygonGeoJson: GeoJSON.FeatureCollection;
+}
+
+export default function PlanMap({
+  isDrawing,
+  handleClick,
+  finishDrawing,
+  verticesGeoJson,
+  lineGeoJson,
+  previewPolygonGeoJson,
+  polygonGeoJson,
+}: PlanMapProps) {
   const points = usePlanStore((s) => s.points);
-  const {
-    isDrawing,
-    vertices,
-    polygon,
-    startDrawing,
-    handleClick,
-    finishDrawing,
-    clearDrawing,
-    verticesGeoJson,
-    lineGeoJson,
-    previewPolygonGeoJson,
-    polygonGeoJson,
-  } = usePolygonDraw();
 
   const onClick = useCallback(
     (e: MapLayerMouseEvent) => {
@@ -131,38 +135,6 @@ export default function PlanMap() {
         </Source>
       </Map>
 
-      {/* Draw control buttons */}
-      <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
-        {!isDrawing && !polygon && (
-          <button
-            onClick={startDrawing}
-            className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm font-medium text-gray-700 shadow hover:bg-gray-50"
-          >
-            Draw Polygon
-          </button>
-        )}
-        {isDrawing && vertices.length >= 3 && (
-          <button
-            onClick={finishDrawing}
-            className="bg-blue-600 text-white rounded px-3 py-1.5 text-sm font-medium shadow hover:bg-blue-700"
-          >
-            Finish
-          </button>
-        )}
-        {(polygon || isDrawing) && (
-          <button
-            onClick={clearDrawing}
-            className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm font-medium text-red-600 shadow hover:bg-red-50"
-          >
-            Clear
-          </button>
-        )}
-        {isDrawing && (
-          <span className="bg-white/90 rounded px-2 py-1 text-xs text-gray-500 shadow">
-            Click to add points{vertices.length >= 3 ? ', double-click to finish' : ''}
-          </span>
-        )}
-      </div>
     </div>
   );
 }
