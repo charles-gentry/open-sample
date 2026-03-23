@@ -12,6 +12,7 @@
   "dependencies": {
     "@tmcw/togeojson": "^7.1.2",
     "@turf/turf": "^7.3.4",
+    "@vercel/analytics": "^2.0.1",
     "maplibre-gl": "^5.21.0",
     "pako": "^2.1.0",
     "qrcode.react": "^4.2.0",
