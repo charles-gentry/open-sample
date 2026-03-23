@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { usePlanStore } from '../../stores/planStore';
 import { encodePlan } from '../../services/sharing';
 
@@ -22,9 +23,12 @@ export default function ShareDialog({ onClose }: { onClose: () => void }) {
       <div className="bg-white rounded-lg shadow-xl p-6 max-w-lg w-full mx-4">
         <h3 className="text-lg font-semibold mb-2">Share Sampling Plan</h3>
         <p className="text-sm text-gray-600 mb-4">
-          Copy this link and open it on a mobile device to navigate to your
-          sampling points.
+          Scan this QR code or copy the link below to open the plan on a mobile
+          device.
         </p>
+        <div className="flex justify-center mb-4">
+          <QRCodeSVG value={url} size={200} />
+        </div>
         <div className="flex gap-2 mb-4">
           <input
             readOnly
