@@ -14,9 +14,10 @@ function randomPointInCircle(center: SamplingPoint, radiusMeters: number): Sampl
 export function generateClustered(
   polygon: GeoJSON.Feature<GeoJSON.Polygon>,
   count: number,
-  minDistance: number
+  minDistance: number,
+  clusterCount: number = 3
 ): SamplingPoint[] {
-  const k = Math.max(2, Math.ceil(count / 5));
+  const k = Math.max(2, clusterCount);
   const centers = generateRandom(polygon, k, minDistance * 3);
 
   if (centers.length === 0) return [];

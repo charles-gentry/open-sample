@@ -15,7 +15,7 @@ export default function ParameterPanel({ onShare }: { onShare: () => void }) {
         pts = generateGrid(polygon, params.count, params.minDistance);
         break;
       case 'clustered':
-        pts = generateClustered(polygon, params.count, params.minDistance);
+        pts = generateClustered(polygon, params.count, params.minDistance, params.clusterCount ?? 3);
         break;
       default:
         pts = generateRandom(polygon, params.count, params.minDistance);
@@ -62,6 +62,19 @@ export default function ParameterPanel({ onShare }: { onShare: () => void }) {
           <option value="clustered">Clustered</option>
         </select>
       </label>
+
+      {params.type === 'clustered' && (
+        <label className="flex flex-col gap-1">
+          <span className="text-sm text-gray-600">Number of Clusters (2+)</span>
+          <input
+            type="number"
+            className="border border-gray-300 rounded px-3 py-2 text-sm"
+            min={2}
+            value={params.clusterCount ?? 3}
+            onChange={(e) => setParams({ clusterCount: Math.max(2, +e.target.value) })}
+          />
+        </label>
+      )}
 
       <label className="flex flex-col gap-1">
         <span className="text-sm text-gray-600">Min Distance (meters)</span>

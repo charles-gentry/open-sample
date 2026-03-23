@@ -16,6 +16,7 @@ export const usePlanStore = create<PlanState>((set) => ({
     count: 10,
     type: 'random',
     minDistance: 50,
+    clusterCount: 3,
   },
   polygon: null,
   points: [],
