@@ -3,22 +3,41 @@ import { generateRandom } from '../../algorithms/random';
 import { generateGrid } from '../../algorithms/grid';
 import { generateClustered } from '../../algorithms/clustered';
 import type { SamplingType } from '../../types/plan';
+import KmlUploader from './KmlUploader';
 
-export default function ParameterPanel({ onShare }: { onShare: () => void }) {
-  const { params, polygon, setParams, setPoints } = usePlanStore();
+interface ParameterPanelProps {
+  onShare: () => void;
+  isDrawing: boolean;
+  vertices: [number, number][];
+  polygon: GeoJSON.Feature<GeoJSON.Polygon> | null;
+  startDrawing: () => void;
+  finishDrawing: () => void;
+  clearDrawing: () => void;
+}
+
+export default function ParameterPanel({
+  onShare,
+  isDrawing,
+  vertices,
+  polygon,
+  startDrawing,
+  finishDrawing,
+  clearDrawing,
+}: ParameterPanelProps) {
+  const { params, polygon: storePolygon, setParams, setPoints } = usePlanStore();
 
   const handleGenerate = () => {
-    if (!polygon) return;
+    if (!storePolygon) return;
     let pts;
     switch (params.type) {
       case 'grid':
-        pts = generateGrid(polygon, params.count, params.minDistance);
+        pts = generateGrid(storePolygon, params.count, params.minDistance);
         break;
       case 'clustered':
-        pts = generateClustered(polygon, params.count, params.minDistance, params.clusterCount ?? 3);
+        pts = generateClustered(storePolygon, params.count, params.minDistance, params.clusterCount ?? 3);
         break;
       default:
-        pts = generateRandom(polygon, params.count, params.minDistance);
+        pts = generateRandom(storePolygon, params.count, params.minDistance);
     }
     setPoints(pts);
   };
@@ -26,6 +45,42 @@ export default function ParameterPanel({ onShare }: { onShare: () => void }) {
   return (
     <div className="flex flex-col gap-4 p-4 bg-white border-l border-gray-200 w-80 overflow-y-auto">
       <h2 className="text-lg font-semibold text-gray-800">Sampling Parameters</h2>
+
+      <div className="flex flex-col gap-2">
+        <h3 className="text-sm font-semibold text-gray-700">Define Area</h3>
+        {!isDrawing && !polygon && (
+          <button
+            onClick={startDrawing}
+            className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Draw Polygon
+          </button>
+        )}
+        {isDrawing && vertices.length >= 3 && (
+          <button
+            onClick={finishDrawing}
+            className="bg-blue-600 text-white rounded px-3 py-1.5 text-sm font-medium hover:bg-blue-700"
+          >
+            Finish
+          </button>
+        )}
+        {(polygon || isDrawing) && (
+          <button
+            onClick={clearDrawing}
+            className="border border-gray-300 rounded px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
+          >
+            Clear
+          </button>
+        )}
+        {isDrawing && (
+          <p className="text-xs text-gray-500">
+            Click map to add points{vertices.length >= 3 ? ', double-click to finish' : ''}
+          </p>
+        )}
+        <KmlUploader />
+      </div>
+
+      <hr className="border-gray-200" />
 
       <label className="flex flex-col gap-1">
         <span className="text-sm text-gray-600">Plan Name</span>
@@ -89,7 +144,7 @@ export default function ParameterPanel({ onShare }: { onShare: () => void }) {
 
       <button
         onClick={handleGenerate}
-        disabled={!polygon}
+        disabled={!storePolygon}
         className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Generate Points
@@ -102,10 +157,6 @@ export default function ParameterPanel({ onShare }: { onShare: () => void }) {
       >
         Share Plan
       </button>
-
-      {!polygon && (
-        <p className="text-xs text-gray-400">Draw a polygon on the map to begin.</p>
-      )}
     </div>
   );
 }
