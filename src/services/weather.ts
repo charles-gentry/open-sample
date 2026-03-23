@@ -5,6 +5,7 @@ export interface DailyWeather {
   tempMin: number;
   precipSum: number;
   precipProb: number;
+  cloudCover: number;
 }
 
 export async function fetchWeather(
@@ -16,7 +17,7 @@ export async function fetchWeather(
   url.searchParams.set('longitude', lng.toFixed(4));
   url.searchParams.set(
     'daily',
-    'weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max'
+    'weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,cloudcover_mean'
   );
   url.searchParams.set('timezone', 'auto');
   url.searchParams.set('forecast_days', '14');
@@ -34,6 +35,7 @@ export async function fetchWeather(
       tempMin: d.temperature_2m_min[i],
       precipSum: d.precipitation_sum[i],
       precipProb: d.precipitation_probability_max[i],
+      cloudCover: d.cloudcover_mean[i] ?? 100,
     });
   }
   return days;
