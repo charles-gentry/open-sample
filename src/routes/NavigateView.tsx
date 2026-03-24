@@ -90,6 +90,13 @@ export default function NavigateView() {
     }
   }, [currentTargetId, markComplete]);
 
+  const centroid = useMemo(() => {
+    if (points.length === 0) return null;
+    const sumLat = points.reduce((s, p) => s + p.lat, 0);
+    const sumLng = points.reduce((s, p) => s + p.lng, 0);
+    return { lat: sumLat / points.length, lng: sumLng / points.length };
+  }, [points]);
+
   const isMobile = useIsMobile();
   const allDone = points.length > 0 && completedIds.size >= points.length;
 
@@ -144,7 +151,7 @@ export default function NavigateView() {
 
       <PointProgress completed={completedIds.size} total={points.length} />
 
-      {target && <DirectionsButton lat={target.lat} lng={target.lng} />}
+      {centroid && <DirectionsButton lat={centroid.lat} lng={centroid.lng} />}
 
       <MarkCompleteButton
         onMark={handleMarkComplete}
