@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { usePlanStore } from '../../stores/planStore';
 import { generateRandom } from '../../algorithms/random';
 import { generateGrid } from '../../algorithms/grid';
@@ -25,6 +26,7 @@ export default function ParameterPanel({
   clearDrawing,
 }: ParameterPanelProps) {
   const { params, polygon: storePolygon, setParams, setPoints } = usePlanStore();
+  const [warning, setWarning] = useState<string | null>(null);
 
   const handleGenerate = () => {
     if (!storePolygon) return;
@@ -40,6 +42,13 @@ export default function ParameterPanel({
         pts = generateRandom(storePolygon, params.count, params.minDistance);
     }
     setPoints(pts);
+    if (pts.length < params.count) {
+      setWarning(
+        `Only ${pts.length} of ${params.count} points could be placed. Try reducing the minimum distance or the number of points.`
+      );
+    } else {
+      setWarning(null);
+    }
   };
 
   return (
@@ -149,6 +158,12 @@ export default function ParameterPanel({
       >
         Generate Points
       </button>
+
+      {warning && (
+        <div className="bg-amber-50 border border-amber-300 text-amber-800 rounded px-3 py-2 text-sm">
+          {warning}
+        </div>
+      )}
 
       <button
         onClick={onShare}
