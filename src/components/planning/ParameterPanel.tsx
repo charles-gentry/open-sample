@@ -3,6 +3,7 @@ import { usePlanStore } from '../../stores/planStore';
 import { generateRandom } from '../../algorithms/random';
 import { generateGrid } from '../../algorithms/grid';
 import { generateClustered } from '../../algorithms/clustered';
+import { generateW } from '../../algorithms/w';
 import type { SamplingType } from '../../types/plan';
 import KmlUploader from './KmlUploader';
 
@@ -37,6 +38,9 @@ export default function ParameterPanel({
         break;
       case 'clustered':
         pts = generateClustered(storePolygon, params.count, params.minDistance, params.clusterCount ?? 3, params.minClusterDistance ?? 150);
+        break;
+      case 'w':
+        pts = generateW(storePolygon, params.count, params.minDistance);
         break;
       default:
         pts = generateRandom(storePolygon, params.count, params.minDistance);
@@ -124,6 +128,7 @@ export default function ParameterPanel({
           <option value="random">Random</option>
           <option value="grid">Grid</option>
           <option value="clustered">Clustered</option>
+          <option value="w">W Pattern</option>
         </select>
       </label>
 
