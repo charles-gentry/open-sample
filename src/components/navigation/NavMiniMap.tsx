@@ -46,7 +46,7 @@ export default function NavMiniMap({
   return (
     <div className="w-full h-48 rounded-lg overflow-hidden border border-gray-200">
       <Map
-        initialViewState={{ longitude: center.lng, latitude: center.lat, zoom: 14 }}
+        viewState={{ longitude: center.lng, latitude: center.lat, zoom: 14, bearing: 0, pitch: 0 }}
         style={{ width: '100%', height: '100%' }}
         mapStyle="https://tiles.openfreemap.org/styles/liberty"
         interactive={false}

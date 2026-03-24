@@ -4,10 +4,24 @@ import ParameterPanel from '../components/planning/ParameterPanel';
 import CalendarStrip from '../components/planning/CalendarStrip';
 import ShareDialog from '../components/planning/ShareDialog';
 import { usePolygonDraw } from '../hooks/usePolygonDraw';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export default function PlanView() {
+  const isMobile = useIsMobile();
   const [showShare, setShowShare] = useState(false);
   const draw = usePolygonDraw();
+
+  if (isMobile) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center">
+        <h2 className="text-xl font-semibold text-gray-800">Desktop Only</h2>
+        <p className="text-gray-600 max-w-sm">
+          Planning is designed for desktop. Open this page on a computer to draw
+          your sampling area and generate points.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">
