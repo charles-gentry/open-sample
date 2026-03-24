@@ -1,4 +1,4 @@
-export type SamplingType = 'random' | 'grid' | 'clustered';
+export type SamplingType = 'random' | 'grid' | 'clustered' | 'w';
 
 export interface SamplingParams {
   name: string;
@@ -24,5 +24,5 @@ export interface SharePayload {
   v: 1;
   n: string;
   p: [number, number][]; // [lng, lat] pairs
-  t: 'r' | 'g' | 'c';
+  t: 'r' | 'g' | 'c' | 'w';
 }
