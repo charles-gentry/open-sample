@@ -15,10 +15,11 @@ export function generateClustered(
   polygon: GeoJSON.Feature<GeoJSON.Polygon>,
   count: number,
   minDistance: number,
-  clusterCount: number = 3
+  clusterCount: number = 3,
+  minClusterDistance: number = 0
 ): SamplingPoint[] {
   const k = Math.max(2, clusterCount);
-  const centers = generateRandom(polygon, k, minDistance * 3);
+  const centers = generateRandom(polygon, k, minClusterDistance > 0 ? minClusterDistance : minDistance * 3);
 
   if (centers.length === 0) return [];
 
