@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import Map, { Source, Layer } from 'react-map-gl/maplibre';
-import type { MapLayerMouseEvent } from 'react-map-gl/maplibre';
+import type { MapLayerMouseEvent, MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { usePlanStore } from '../../stores/planStore';
 
@@ -24,6 +24,28 @@ export default function PlanMap({
   polygonGeoJson,
 }: PlanMapProps) {
   const points = usePlanStore((s) => s.points);
+
+  const mapRef = useRef<MapRef>(null);
+  const pendingCenter = useRef<[number, number] | null>(null);
+
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(({ coords }) => {
+      const center: [number, number] = [coords.longitude, coords.latitude];
+      if (mapRef.current) {
+        mapRef.current.flyTo({ center, zoom: 10 });
+      } else {
+        pendingCenter.current = center;
+      }
+    });
+  }, []);
+
+  const onLoad = useCallback(() => {
+    if (pendingCenter.current) {
+      mapRef.current?.flyTo({ center: pendingCenter.current, zoom: 10 });
+      pendingCenter.current = null;
+    }
+  }, []);
 
   const onClick = useCallback(
     (e: MapLayerMouseEvent) => {
@@ -53,12 +75,14 @@ export default function PlanMap({
   return (
     <div className="relative w-full h-full">
       <Map
+        ref={mapRef}
         initialViewState={{ longitude: -98.5, latitude: 39.8, zoom: 4 }}
         style={{ width: '100%', height: '100%' }}
         mapStyle="https://tiles.openfreemap.org/styles/liberty"
         cursor={isDrawing ? 'crosshair' : undefined}
         onClick={onClick}
         onDblClick={onDblClick}
+        onLoad={onLoad}
       >
         {/* Finalized polygon (drawn or KML-uploaded) */}
         <Source id="polygon-fill" type="geojson" data={polygonGeoJson}>
