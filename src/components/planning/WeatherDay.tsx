@@ -6,9 +6,10 @@ interface WeatherDayProps {
   day: DailyWeather;
   passes: SatellitePass[];
   cloudThreshold: number;
+  timezone: string;
 }
 
-export default function WeatherDay({ day, passes, cloudThreshold }: WeatherDayProps) {
+export default function WeatherDay({ day, passes, cloudThreshold, timezone }: WeatherDayProps) {
   const { icon } = weatherCodeToLabel(day.weatherCode);
   const date = new Date(day.date + 'T00:00:00');
   const dayName = date.toLocaleDateString('en', { weekday: 'short' });
@@ -47,7 +48,7 @@ export default function WeatherDay({ day, passes, cloudThreshold }: WeatherDayPr
               🛰️
               <span className="font-medium">{pass.satellite.replace('Sentinel-', 'S')}</span>
               <span className="text-gray-500 ml-0.5">
-                {pass.time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' })}
+                {pass.time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', timeZone: timezone })}
               </span>
             </span>
           ))}

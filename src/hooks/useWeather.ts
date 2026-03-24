@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { fetchWeather, type DailyWeather } from '../services/weather';
+import { fetchWeather, type WeatherResult } from '../services/weather';
 
 export function useWeather(lat: number | null, lng: number | null) {
-  const [data, setData] = useState<DailyWeather[] | null>(null);
+  const [data, setData] = useState<WeatherResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
