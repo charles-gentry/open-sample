@@ -6,6 +6,7 @@ export interface SamplingParams {
   type: SamplingType;
   minDistance: number; // meters
   clusterCount?: number; // only used when type === 'clustered'
+  minClusterDistance?: number; // only used when type === 'clustered'
 }
 
 export interface SamplingPoint {

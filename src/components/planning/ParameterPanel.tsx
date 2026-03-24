@@ -36,7 +36,7 @@ export default function ParameterPanel({
         pts = generateGrid(storePolygon, params.count, params.minDistance);
         break;
       case 'clustered':
-        pts = generateClustered(storePolygon, params.count, params.minDistance, params.clusterCount ?? 3);
+        pts = generateClustered(storePolygon, params.count, params.minDistance, params.clusterCount ?? 3, params.minClusterDistance ?? 150);
         break;
       default:
         pts = generateRandom(storePolygon, params.count, params.minDistance);
@@ -136,6 +136,19 @@ export default function ParameterPanel({
             min={2}
             value={params.clusterCount ?? 3}
             onChange={(e) => setParams({ clusterCount: Math.max(2, +e.target.value) })}
+          />
+        </label>
+      )}
+
+      {params.type === 'clustered' && (
+        <label className="flex flex-col gap-1">
+          <span className="text-sm text-gray-600">Min Cluster Distance (meters)</span>
+          <input
+            type="number"
+            className="border border-gray-300 rounded px-3 py-2 text-sm"
+            min={0}
+            value={params.minClusterDistance ?? 150}
+            onChange={(e) => setParams({ minClusterDistance: Math.max(0, +e.target.value) })}
           />
         </label>
       )}
