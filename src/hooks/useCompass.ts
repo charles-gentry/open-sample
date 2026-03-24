@@ -5,6 +5,7 @@ export function useCompass() {
   const [error, setError] = useState<string | null>(null);
   const [needsPermission, setNeedsPermission] = useState(false);
   const smoothRef = useRef(0);
+  const rafRef = useRef<number>(0);
 
   const handleOrientation = useCallback((event: DeviceOrientationEvent) => {
     let raw: number | null = null;
@@ -23,7 +24,14 @@ export function useCompass() {
       const diff = raw - smoothRef.current;
       const wrapped = ((diff + 540) % 360) - 180;
       smoothRef.current = (smoothRef.current + 0.15 * wrapped + 360) % 360;
-      setHeading(smoothRef.current);
+
+      // Throttle React state updates to one per animation frame
+      if (!rafRef.current) {
+        rafRef.current = requestAnimationFrame(() => {
+          setHeading(smoothRef.current);
+          rafRef.current = 0;
+        });
+      }
     }
   }, []);
 
@@ -59,7 +67,10 @@ export function useCompass() {
     const eventName = hasAbsolute ? 'deviceorientationabsolute' : 'deviceorientation';
 
     window.addEventListener(eventName, handler, true);
-    return () => window.removeEventListener(eventName, handler, true);
+    return () => {
+      window.removeEventListener(eventName, handler, true);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [handleOrientation]);
 
   return { heading, error, needsPermission, requestPermission };

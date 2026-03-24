@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback, useRef } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { decodePlan } from '../services/sharing';
 import { useNavStore } from '../stores/navStore';
@@ -103,16 +103,10 @@ export default function NavigateView() {
     return calcBearing(position, target);
   }, [position, target]);
 
-  const rawRotation = useMemo(() => {
+  const arrowRotation = useMemo(() => {
     if (heading === null) return bearingToTarget;
     return ((bearingToTarget - heading + 720) % 360);
   }, [bearingToTarget, heading]);
-
-  // Smooth arrow rotation to dampen GPS position noise in bearing calc
-  const smoothRotRef = useRef(rawRotation);
-  const diff = ((rawRotation - smoothRotRef.current + 540) % 360) - 180;
-  smoothRotRef.current = (smoothRotRef.current + 0.35 * diff + 360) % 360;
-  const arrowRotation = smoothRotRef.current;
 
   const handleMarkComplete = useCallback(() => {
     if (currentTargetId !== null) {
