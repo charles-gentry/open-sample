@@ -44,7 +44,7 @@ export default function NavigateView() {
     }
   }, [data, setPlan]);
 
-  // Auto-select nearest uncompleted point when position updates or completions change
+  // Auto-select nearest uncompleted point with hysteresis to prevent flickering
   useEffect(() => {
     if (!position || points.length === 0) return;
     const uncompleted = points.filter((p) => !completedIds.has(p.id));
@@ -52,6 +52,7 @@ export default function NavigateView() {
       setCurrentTarget(null);
       return;
     }
+
     let nearest = uncompleted[0];
     let minDist = calcDistance(position, nearest);
     for (let i = 1; i < uncompleted.length; i++) {
@@ -61,8 +62,31 @@ export default function NavigateView() {
         nearest = uncompleted[i];
       }
     }
-    setCurrentTarget(nearest.id);
-  }, [position, points, completedIds, setCurrentTarget]);
+
+    // If no current target or current target was completed, select nearest
+    const currentStillValid =
+      currentTargetId !== null &&
+      uncompleted.some((p) => p.id === currentTargetId);
+
+    if (!currentStillValid) {
+      setCurrentTarget(nearest.id);
+      return;
+    }
+
+    // Hysteresis: only switch if nearest is significantly closer than current
+    if (nearest.id !== currentTargetId) {
+      const currentDist = calcDistance(
+        position,
+        uncompleted.find((p) => p.id === currentTargetId)!
+      );
+      if (
+        currentDist - minDist > 10 &&
+        currentDist - minDist > currentDist * 0.2
+      ) {
+        setCurrentTarget(nearest.id);
+      }
+    }
+  }, [position, points, completedIds, currentTargetId, setCurrentTarget]);
 
   const target = useMemo(
     () => points.find((p) => p.id === currentTargetId) ?? null,
@@ -81,7 +105,7 @@ export default function NavigateView() {
 
   const arrowRotation = useMemo(() => {
     if (heading === null) return bearingToTarget;
-    return ((bearingToTarget - heading + 360) % 360);
+    return ((bearingToTarget - heading + 720) % 360);
   }, [bearingToTarget, heading]);
 
   const handleMarkComplete = useCallback(() => {
