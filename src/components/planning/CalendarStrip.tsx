@@ -16,23 +16,42 @@ export default function CalendarStrip() {
     return { lat: c.geometry.coordinates[1], lng: c.geometry.coordinates[0] };
   }, [polygon]);
 
-  const { data: weather, loading: weatherLoading } = useWeather(
+  const { data: weatherResult, loading: weatherLoading } = useWeather(
     centroid?.lat ?? null,
     centroid?.lng ?? null
   );
+  const weather = weatherResult?.days ?? null;
+  const timezone = weatherResult?.timezone ?? 'UTC';
   const { passes } = useSatellitePasses(
     centroid?.lat ?? null,
     centroid?.lng ?? null
   );
 
   const passesByDate = useMemo(() => {
+    const sunTimes = new Map<string, { sunrise: string; sunset: string }>();
+    if (weather) {
+      for (const day of weather) {
+        sunTimes.set(day.date, {
+          sunrise: day.sunrise.slice(11),
+          sunset: day.sunset.slice(11),
+        });
+      }
+    }
+
     const map = new Map<string, SatellitePass[]>();
     for (const pass of passes) {
-      const key = pass.time.toLocaleDateString('en-CA');
+      const key = pass.time.toLocaleDateString('en-CA', { timeZone: timezone });
+      const sun = sunTimes.get(key);
+      if (sun) {
+        const localTime = pass.time.toLocaleTimeString('en-CA', {
+          hour12: false, hour: '2-digit', minute: '2-digit', timeZone: timezone,
+        });
+        if (localTime < sun.sunrise || localTime > sun.sunset) continue;
+      }
       map.set(key, [...(map.get(key) ?? []), pass]);
     }
     return map;
-  }, [passes]);
+  }, [passes, weather, timezone]);
 
   if (!polygon) {
     return (
@@ -71,6 +90,7 @@ export default function CalendarStrip() {
             day={day}
             passes={passesByDate.get(day.date) ?? []}
             cloudThreshold={cloudThreshold}
+            timezone={timezone}
           />
         ))}
       </div>

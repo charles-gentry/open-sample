@@ -6,18 +6,25 @@ export interface DailyWeather {
   precipSum: number;
   precipProb: number;
   cloudCover: number;
+  sunrise: string;
+  sunset: string;
+}
+
+export interface WeatherResult {
+  days: DailyWeather[];
+  timezone: string;
 }
 
 export async function fetchWeather(
   lat: number,
   lng: number
-): Promise<DailyWeather[]> {
+): Promise<WeatherResult> {
   const url = new URL('https://api.open-meteo.com/v1/forecast');
   url.searchParams.set('latitude', lat.toFixed(4));
   url.searchParams.set('longitude', lng.toFixed(4));
   url.searchParams.set(
     'daily',
-    'weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,cloudcover_mean'
+    'weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,cloudcover_mean,sunrise,sunset'
   );
   url.searchParams.set('timezone', 'auto');
   url.searchParams.set('forecast_days', '14');
@@ -36,9 +43,11 @@ export async function fetchWeather(
       precipSum: d.precipitation_sum[i],
       precipProb: d.precipitation_probability_max[i],
       cloudCover: d.cloudcover_mean[i] ?? 100,
+      sunrise: d.sunrise[i],
+      sunset: d.sunset[i],
     });
   }
-  return days;
+  return { days, timezone: data.timezone };
 }
 
 export function weatherCodeToLabel(code: number): { label: string; icon: string } {

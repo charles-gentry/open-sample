@@ -1,6 +1,6 @@
 import type { SatellitePass } from '../../services/satellite';
 
-export default function SatellitePassIndicator({ passes }: { passes: SatellitePass[] }) {
+export default function SatellitePassIndicator({ passes, timezone }: { passes: SatellitePass[]; timezone?: string }) {
   if (passes.length === 0) return null;
 
   return (
@@ -10,8 +10,8 @@ export default function SatellitePassIndicator({ passes }: { passes: SatellitePa
         {passes.slice(0, 3).map((pass, i) => (
           <span key={i}>
             {pass.satellite}:{' '}
-            {pass.time.toLocaleDateString('en', { month: 'short', day: 'numeric' })}{' '}
-            {pass.time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' })}
+            {pass.time.toLocaleDateString('en', { month: 'short', day: 'numeric', timeZone: timezone })}{' '}
+            {pass.time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', timeZone: timezone })}
           </span>
         ))}
         {passes.length > 3 && <span>+{passes.length - 3} more passes</span>}
