@@ -1,73 +1,95 @@
-# React + TypeScript + Vite
+# Open Sample
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application for planning statistically robust environmental sampling locations and navigating to them in the field.
 
-Currently, two official plugins are available:
+## The Problem
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Environmental researchers and field scientists need to generate sampling locations that follow rigorous spatial strategies — random, grid, clustered, or transect-based patterns — and then physically navigate to those exact coordinates with a mobile device. Open Sample combines both workflows into a single tool: a desktop planning interface for designing sample plans and a mobile navigation interface for fieldwork.
 
-## React Compiler
+## Who It's For
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Environmental scientists conducting field studies
+- Ecology researchers requiring spatial sampling strategies
+- Conservation specialists planning survey locations
+- Land management professionals collecting field data
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Four sampling algorithms** — Random (Poisson disk), Grid, Clustered, and W Pattern (transect)
+- **Interactive map** — Draw a study area polygon or upload a KML file
+- **Configurable parameters** — Point count, minimum distance between points, cluster count and spacing
+- **Weather & satellite forecasts** — 14-day weather outlook and Sentinel satellite pass times for the study area
+- **Plan sharing** — Generate a compressed URL or QR code to send plans to field teams
+- **Mobile compass navigation** — Real-time GPS tracking with a compass arrow pointing to the next sampling point
+- **Progress tracking** — Mark points complete, auto-advance to the nearest uncompleted point, and view a mini map of all points
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Installation
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+**Prerequisites:** Node.js and npm
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Clone the repository
+git clone https://github.com/charles-gentry/open-sample.git
+cd open-sample
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Usage
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Open Sample has two main workflows:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Planning (Desktop)
+
+1. Open the app and click **Start Planning**
+2. Draw a polygon on the map to define your study area, or upload a KML file
+3. Configure sampling parameters — plan name, number of points (1–99), sampling type, and minimum distance
+4. Click **Generate Points** to create sample locations
+5. Review the 14-day weather forecast and satellite pass schedule
+6. Click **Share Plan** to generate a URL and QR code for your field team
+
+### Navigation (Mobile)
+
+1. Open the shared link on a mobile device
+2. Grant GPS and compass permissions when prompted
+3. Follow the compass arrow toward the current target point
+4. When within 5 meters, tap **Mark Complete**
+5. The app automatically selects the nearest uncompleted point
+6. Repeat until all points are visited
+
+## Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start the development server with hot reload |
+| `npm run build` | Type-check and build for production |
+| `npm run lint` | Run ESLint to check code quality |
+| `npm run preview` | Preview the production build locally |
+
+## Tech Stack
+
+- **React** with **TypeScript** — UI framework
+- **Vite** — Build tool and dev server
+- **MapLibre GL** + **React Map GL** — Interactive mapping
+- **Turf.js** — Geospatial analysis (distance, bearing, point-in-polygon)
+- **Zustand** — Lightweight state management
+- **Tailwind CSS** — Utility-first styling
+- **Satellite.js** — Satellite pass predictions
+- **Pako** — Compression for URL encoding
+- Deployed on **Vercel**
+
+## Contributing
+
+Contributions are welcome! To get started:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Install dependencies (`npm install`)
+4. Make your changes
+5. Run the linter (`npm run lint`) and fix any issues
+6. Ensure the project builds (`npm run build`)
+7. Commit your changes and open a pull request
