@@ -4,6 +4,7 @@ import { decodePlan } from '../services/sharing';
 import { useNavStore } from '../stores/navStore';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useCompass } from '../hooks/useCompass';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { bearing as calcBearing, distance as calcDistance } from '../lib/geo';
 import CompassArrow from '../components/navigation/CompassArrow';
 import DistanceDisplay from '../components/navigation/DistanceDisplay';
@@ -88,7 +89,20 @@ export default function NavigateView() {
     }
   }, [currentTargetId, markComplete]);
 
+  const isMobile = useIsMobile();
   const allDone = points.length > 0 && completedIds.size >= points.length;
+
+  if (!isMobile) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center">
+        <h2 className="text-xl font-semibold text-gray-800">Mobile Only</h2>
+        <p className="text-gray-600 max-w-sm">
+          Navigation is designed for mobile. Open the shared link on your phone
+          to start navigating with GPS and compass.
+        </p>
+      </div>
+    );
+  }
 
   if (allDone) {
     return <CompletionNotice planName={planName} total={points.length} />;
