@@ -12,7 +12,7 @@ import PointProgress from '../components/navigation/PointProgress';
 import MarkCompleteButton from '../components/navigation/MarkCompleteButton';
 import CompletionNotice from '../components/navigation/CompletionNotice';
 import NavMiniMap from '../components/navigation/NavMiniMap';
-import DirectionsButton from '../components/navigation/DirectionsButton';
+
 
 export default function NavigateView() {
   const { data } = useParams<{ data: string }>();
@@ -175,8 +175,6 @@ export default function NavigateView() {
 
       <PointProgress completed={completedIds.size} total={points.length} />
 
-      {centroid && <DirectionsButton lat={centroid.lat} lng={centroid.lng} />}
-
       <MarkCompleteButton
         onMark={handleMarkComplete}
         isNear={dist !== null && dist < 5}
@@ -188,6 +186,7 @@ export default function NavigateView() {
         currentTargetId={currentTargetId}
         userLat={position?.lat ?? null}
         userLng={position?.lng ?? null}
+        centroid={centroid}
       />
     </div>
   );
