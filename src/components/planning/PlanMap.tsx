@@ -89,12 +89,12 @@ export default function PlanMap({
           <Layer
             id="polygon-fill-layer"
             type="fill"
-            paint={{ 'fill-color': '#3b82f6', 'fill-opacity': 0.15 }}
+            paint={{ 'fill-color': '#00ff41', 'fill-opacity': 0.1 }}
           />
           <Layer
             id="polygon-outline-layer"
             type="line"
-            paint={{ 'line-color': '#3b82f6', 'line-width': 2 }}
+            paint={{ 'line-color': '#00ff41', 'line-width': 2 }}
           />
         </Source>
 
@@ -103,7 +103,7 @@ export default function PlanMap({
           <Layer
             id="draw-preview-fill"
             type="fill"
-            paint={{ 'fill-color': '#3b82f6', 'fill-opacity': 0.1 }}
+            paint={{ 'fill-color': '#00ff41', 'fill-opacity': 0.06 }}
           />
         </Source>
 
@@ -113,7 +113,7 @@ export default function PlanMap({
             id="draw-line-stroke"
             type="line"
             paint={{
-              'line-color': '#3b82f6',
+              'line-color': '#00ff41',
               'line-width': 2,
               'line-dasharray': [2, 2],
             }}
@@ -127,9 +127,9 @@ export default function PlanMap({
             type="circle"
             paint={{
               'circle-radius': 5,
-              'circle-color': '#3b82f6',
+              'circle-color': '#00ff41',
               'circle-stroke-width': 2,
-              'circle-stroke-color': '#ffffff',
+              'circle-stroke-color': '#0a0e0a',
             }}
           />
         </Source>
@@ -141,9 +141,9 @@ export default function PlanMap({
             type="circle"
             paint={{
               'circle-radius': 6,
-              'circle-color': '#e63946',
+              'circle-color': '#ffb000',
               'circle-stroke-width': 2,
-              'circle-stroke-color': '#ffffff',
+              'circle-stroke-color': '#0a0e0a',
             }}
           />
           <Layer
@@ -154,7 +154,7 @@ export default function PlanMap({
               'text-size': 11,
               'text-offset': [0, -1.5],
             }}
-            paint={{ 'text-color': '#1d3557' }}
+            paint={{ 'text-color': '#00ff41' }}
           />
         </Source>
       </Map>
