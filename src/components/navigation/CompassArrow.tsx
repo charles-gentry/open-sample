@@ -37,16 +37,15 @@ export default function CompassArrow({ rotation }: Props) {
       <svg
         ref={svgRef}
         viewBox="0 0 100 100"
-        className="w-full h-full"
-        style={{ filter: 'drop-shadow(0 0 8px rgba(0, 255, 65, 0.5))' }}
+        className="w-full h-full drop-shadow-lg"
       >
         <polygon
           points="50,10 35,70 50,58 65,70"
-          fill="#00ff41"
-          stroke="#0a0e0a"
+          fill="#e63946"
+          stroke="#fff"
           strokeWidth="2"
         />
-        <circle cx="50" cy="50" r="4" fill="#ffb000" />
+        <circle cx="50" cy="50" r="4" fill="#1d3557" />
       </svg>
     </div>
   );

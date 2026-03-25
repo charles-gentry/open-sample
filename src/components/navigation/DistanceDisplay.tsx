@@ -6,8 +6,8 @@ export default function DistanceDisplay({ meters }: { meters: number }) {
 
   return (
     <div className="text-center">
-      <span className="text-4xl font-bold text-retro-green">{display}</span>
-      <p className="text-sm text-retro-green-dim uppercase tracking-wider">to next point</p>
+      <span className="text-4xl font-bold text-gray-800">{display}</span>
+      <p className="text-sm text-gray-500">to next point</p>
     </div>
   );
 }
