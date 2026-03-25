@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import Map, { Source, Layer, Marker } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { NavPoint } from '../../types/navigation';
+import DirectionsButton from './DirectionsButton';
 
 interface Props {
   points: NavPoint[];
@@ -9,6 +10,7 @@ interface Props {
   currentTargetId: number | null;
   userLat: number | null;
   userLng: number | null;
+  centroid: { lat: number; lng: number } | null;
 }
 
 export default function NavMiniMap({
@@ -17,6 +19,7 @@ export default function NavMiniMap({
   currentTargetId,
   userLat,
   userLng,
+  centroid,
 }: Props) {
   const geojson: GeoJSON.FeatureCollection = useMemo(
     () => ({
@@ -44,7 +47,12 @@ export default function NavMiniMap({
   }, [points, userLat, userLng]);
 
   return (
-    <div className="w-full h-48 rounded-lg overflow-hidden border border-gray-200">
+    <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200">
+      {centroid && (
+        <div className="absolute top-2 right-2 z-10">
+          <DirectionsButton lat={centroid.lat} lng={centroid.lng} />
+        </div>
+      )}
       <Map
         longitude={center.lng}
         latitude={center.lat}
