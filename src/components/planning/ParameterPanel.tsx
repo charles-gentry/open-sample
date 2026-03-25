@@ -55,24 +55,25 @@ export default function ParameterPanel({
     }
   };
 
+  const inputClass = "bg-retro-bg border border-retro-green-muted text-retro-text px-3 py-2 text-sm focus:border-retro-green focus:outline-none";
+  const labelClass = "text-sm text-retro-green-dim";
+  const btnOutline = "border border-retro-green-muted text-retro-text px-3 py-1.5 text-sm font-bold uppercase tracking-wider hover:border-retro-green hover:text-retro-green transition-colors";
+
   return (
-    <div className="flex flex-col gap-4 p-4 bg-white border-l border-gray-200 w-80 overflow-y-auto">
-      <h2 className="text-lg font-semibold text-gray-800">Sampling Parameters</h2>
+    <div className="flex flex-col gap-4 p-4 bg-retro-panel border-l border-retro-green-muted w-80 overflow-y-auto">
+      <h2 className="text-lg font-bold text-retro-green uppercase tracking-wider">Parameters</h2>
 
       <div className="flex flex-col gap-2">
-        <h3 className="text-sm font-semibold text-gray-700">Define Area</h3>
+        <h3 className="text-sm font-bold text-retro-green uppercase tracking-wider">Define Area</h3>
         {!isDrawing && !polygon && (
-          <button
-            onClick={startDrawing}
-            className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
+          <button onClick={startDrawing} className={btnOutline}>
             Draw Polygon
           </button>
         )}
         {isDrawing && vertices.length >= 3 && (
           <button
             onClick={finishDrawing}
-            className="bg-blue-600 text-white rounded px-3 py-1.5 text-sm font-medium hover:bg-blue-700"
+            className="border-2 border-retro-green text-retro-green px-3 py-1.5 text-sm font-bold uppercase tracking-wider hover:bg-retro-green hover:text-retro-bg transition-colors"
           >
             Finish
           </button>
@@ -80,26 +81,26 @@ export default function ParameterPanel({
         {(polygon || isDrawing) && (
           <button
             onClick={clearDrawing}
-            className="border border-gray-300 rounded px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
+            className="border border-retro-red text-retro-red px-3 py-1.5 text-sm font-bold uppercase tracking-wider hover:bg-retro-red hover:text-retro-bg transition-colors"
           >
             Clear
           </button>
         )}
         {isDrawing && (
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-retro-green-dim">
             Click map to add points{vertices.length >= 3 ? ', double-click to finish' : ''}
           </p>
         )}
         <KmlUploader />
       </div>
 
-      <hr className="border-gray-200" />
+      <hr className="border-retro-green-muted" />
 
       <label className="flex flex-col gap-1">
-        <span className="text-sm text-gray-600">Plan Name</span>
+        <span className={labelClass}>Plan Name</span>
         <input
           type="text"
-          className="border border-gray-300 rounded px-3 py-2 text-sm"
+          className={inputClass}
           value={params.name}
           onChange={(e) => setParams({ name: e.target.value })}
           placeholder="My sampling plan"
@@ -107,10 +108,10 @@ export default function ParameterPanel({
       </label>
 
       <label className="flex flex-col gap-1">
-        <span className="text-sm text-gray-600">Number of Points (1-99)</span>
+        <span className={labelClass}>Number of Points (1-99)</span>
         <input
           type="number"
-          className="border border-gray-300 rounded px-3 py-2 text-sm"
+          className={inputClass}
           min={1}
           max={99}
           value={params.count}
@@ -119,9 +120,9 @@ export default function ParameterPanel({
       </label>
 
       <label className="flex flex-col gap-1">
-        <span className="text-sm text-gray-600">Sampling Type</span>
+        <span className={labelClass}>Sampling Type</span>
         <select
-          className="border border-gray-300 rounded px-3 py-2 text-sm"
+          className={inputClass}
           value={params.type}
           onChange={(e) => setParams({ type: e.target.value as SamplingType })}
         >
@@ -134,10 +135,10 @@ export default function ParameterPanel({
 
       {params.type === 'clustered' && (
         <label className="flex flex-col gap-1">
-          <span className="text-sm text-gray-600">Number of Clusters (2+)</span>
+          <span className={labelClass}>Number of Clusters (2+)</span>
           <input
             type="number"
-            className="border border-gray-300 rounded px-3 py-2 text-sm"
+            className={inputClass}
             min={2}
             value={params.clusterCount ?? 3}
             onChange={(e) => setParams({ clusterCount: Math.max(2, +e.target.value) })}
@@ -147,10 +148,10 @@ export default function ParameterPanel({
 
       {params.type === 'clustered' && (
         <label className="flex flex-col gap-1">
-          <span className="text-sm text-gray-600">Min Cluster Distance (meters)</span>
+          <span className={labelClass}>Min Cluster Distance (meters)</span>
           <input
             type="number"
-            className="border border-gray-300 rounded px-3 py-2 text-sm"
+            className={inputClass}
             min={0}
             value={params.minClusterDistance ?? 150}
             onChange={(e) => setParams({ minClusterDistance: Math.max(0, +e.target.value) })}
@@ -159,10 +160,10 @@ export default function ParameterPanel({
       )}
 
       <label className="flex flex-col gap-1">
-        <span className="text-sm text-gray-600">Min Distance (meters)</span>
+        <span className={labelClass}>Min Distance (meters)</span>
         <input
           type="number"
-          className="border border-gray-300 rounded px-3 py-2 text-sm"
+          className={inputClass}
           min={0}
           value={params.minDistance}
           onChange={(e) => setParams({ minDistance: Math.max(0, +e.target.value) })}
@@ -172,13 +173,13 @@ export default function ParameterPanel({
       <button
         onClick={handleGenerate}
         disabled={!storePolygon}
-        className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="border-2 border-retro-green text-retro-green bg-retro-bg px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-retro-green hover:text-retro-bg transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-retro-bg disabled:hover:text-retro-green"
       >
         Generate Points
       </button>
 
       {warning && (
-        <div className="bg-amber-50 border border-amber-300 text-amber-800 rounded px-3 py-2 text-sm">
+        <div className="bg-retro-bg border border-retro-amber text-retro-amber px-3 py-2 text-sm">
           {warning}
         </div>
       )}
@@ -186,7 +187,7 @@ export default function ParameterPanel({
       <button
         onClick={onShare}
         disabled={usePlanStore.getState().points.length === 0}
-        className="bg-green-600 text-white rounded px-4 py-2 text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="border-2 border-retro-amber text-retro-amber bg-retro-bg px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-retro-amber hover:text-retro-bg transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-retro-bg disabled:hover:text-retro-amber"
       >
         Share Plan
       </button>

@@ -1,6 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --font-mono: 'Share Tech Mono', monospace;
+  --color-retro-bg: #0a0e0a;
+  --color-retro-panel: #111611;
+  --color-retro-green: #00ff41;
+  --color-retro-green-dim: #00aa2a;
+  --color-retro-green-muted: #1a3a1a;
+  --color-retro-amber: #ffb000;
+  --color-retro-amber-dim: #996a00;
+  --color-retro-red: #ff3333;
+  --color-retro-text: #b0ffb0;
+  --color-retro-border: #1a3a1a;
+}
 
 html, body, #root {
   height: 100%;
   margin: 0;
+  font-family: 'Share Tech Mono', monospace;
+  background-color: #0a0e0a;
+  color: #b0ffb0;
+}
+
+/* Scanline overlay effect */
+#root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+}
+
+/* Custom scrollbar for retro feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0e0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a3a1a;
+  border: 1px solid #00aa2a;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00aa2a;
+}
+
+/* Override range input for retro slider */
+input[type="range"] {
+  accent-color: #00ff41;
+}
+
+/* Retro glow animation */
+@keyframes retro-pulse {
+  0%, 100% { box-shadow: 0 0 5px #00ff41, 0 0 10px rgba(0, 255, 65, 0.3); }
+  50% { box-shadow: 0 0 10px #00ff41, 0 0 20px rgba(0, 255, 65, 0.5); }
 }

@@ -19,10 +19,10 @@ export default function ShareDialog({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-lg shadow-xl p-6 max-w-lg w-full mx-4">
-        <h3 className="text-lg font-semibold mb-2">Share Sampling Plan</h3>
-        <p className="text-sm text-gray-600 mb-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+      <div className="bg-retro-panel border-2 border-retro-green p-6 max-w-lg w-full mx-4">
+        <h3 className="text-lg font-bold text-retro-green uppercase tracking-wider mb-2">Share Sampling Plan</h3>
+        <p className="text-sm text-retro-text mb-4">
           Scan this QR code or copy the link below to open the plan on a mobile
           device.
         </p>
@@ -33,21 +33,21 @@ export default function ShareDialog({ onClose }: { onClose: () => void }) {
           <input
             readOnly
             value={url}
-            className="flex-1 border border-gray-300 rounded px-3 py-2 text-xs font-mono bg-gray-50 truncate"
+            className="flex-1 border border-retro-green-muted bg-retro-bg text-retro-green px-3 py-2 text-xs font-mono truncate"
           />
           <button
             onClick={handleCopy}
-            className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+            className="px-4 py-2 border-2 border-retro-green text-retro-green text-sm font-bold uppercase tracking-wider hover:bg-retro-green hover:text-retro-bg transition-colors"
           >
             {copied ? 'Copied!' : 'Copy'}
           </button>
         </div>
-        <p className="text-xs text-gray-400 mb-4">
+        <p className="text-xs text-retro-green-dim mb-4">
           {points.length} points encoded ({url.length} chars)
         </p>
         <button
           onClick={onClose}
-          className="text-sm text-gray-500 hover:text-gray-700"
+          className="text-sm text-retro-green-dim hover:text-retro-green uppercase tracking-wider transition-colors"
         >
           Close
         </button>
