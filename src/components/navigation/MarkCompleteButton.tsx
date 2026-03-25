@@ -7,12 +7,11 @@ export default function MarkCompleteButton({ onMark, isNear }: Props) {
   return (
     <button
       onClick={onMark}
-      className={`w-full py-4 text-lg font-bold uppercase tracking-wider transition-all ${
+      className={`w-full py-4 rounded-xl text-lg font-semibold text-white transition-all ${
         isNear
-          ? 'bg-retro-green text-retro-bg border-2 border-retro-green'
-          : 'bg-retro-bg text-retro-green border-2 border-retro-green hover:bg-retro-green hover:text-retro-bg'
+          ? 'bg-green-500 hover:bg-green-600 animate-pulse'
+          : 'bg-blue-600 hover:bg-blue-700'
       }`}
-      style={isNear ? { animation: 'retro-pulse 1.5s ease-in-out infinite' } : undefined}
     >
       Mark Point Complete
     </button>

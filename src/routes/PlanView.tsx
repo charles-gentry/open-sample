@@ -13,9 +13,9 @@ export default function PlanView() {
 
   if (isMobile) {
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center bg-retro-bg">
-        <h2 className="text-xl font-bold text-retro-amber uppercase tracking-wider">Desktop Only</h2>
-        <p className="text-retro-text max-w-sm">
+      <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center">
+        <h2 className="text-xl font-semibold text-gray-800">Desktop Only</h2>
+        <p className="text-gray-600 max-w-sm">
           Planning is designed for desktop. Open this page on a computer to draw
           your sampling area and generate points.
         </p>
@@ -24,9 +24,9 @@ export default function PlanView() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-retro-bg">
-      <header className="flex items-center px-4 py-2 bg-retro-panel border-b border-retro-green-muted">
-        <h1 className="text-lg font-bold text-retro-green uppercase tracking-wider">Open Sample</h1>
+    <div className="flex flex-col h-full">
+      <header className="flex items-center px-4 py-2 bg-white border-b border-gray-200">
+        <h1 className="text-lg font-bold text-gray-800">Open Sample</h1>
       </header>
       <div className="flex flex-1 min-h-0">
         <div className="flex-1">
