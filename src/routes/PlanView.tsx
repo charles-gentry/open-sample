@@ -45,7 +45,7 @@ export default function PlanView() {
       </header>
 
       {/* Floating ParameterPanel */}
-      <div className={`absolute top-4 right-4 z-20 w-80 overflow-y-auto transition-all duration-300 ${calendarCollapsed ? 'bottom-16' : 'bottom-52'}`}>
+      <div className="absolute top-4 right-4 z-20 w-80 overflow-y-auto bottom-52">
         <ParameterPanel
           onShare={() => setShowShare(true)}
           isDrawing={draw.isDrawing}

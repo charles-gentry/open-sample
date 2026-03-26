@@ -67,37 +67,31 @@ export default function CalendarStrip({ collapsed, onToggleCollapsed }: Calendar
   }
 
   return (
-    <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/60 overflow-hidden">
+    <div className={`bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/60 overflow-hidden transition-all duration-300 ease-in-out ${collapsed ? 'max-w-[220px]' : 'max-w-full'}`}>
       <div className="flex items-center gap-3 px-4 py-2.5 border-b border-slate-100/80">
         <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">14-Day Forecast</span>
-        {!collapsed && (
-          <div className="flex items-center gap-2 ml-auto">
-            <span className="text-xs text-slate-400 shrink-0">☁️ Clear pass &lt;</span>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={cloudThreshold}
-              onChange={(e) => setCloudThreshold(Number(e.target.value))}
-              className="w-24 accent-brand"
-            />
-            <span className="text-xs font-bold text-slate-700 w-8 text-right">{cloudThreshold}%</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2 ml-auto">
+          <span className="text-xs text-slate-400 shrink-0">☁️ Clear pass &lt;</span>
+          <input
+            type="range"
+            min={0}
+            max={100}
+            value={cloudThreshold}
+            onChange={(e) => setCloudThreshold(Number(e.target.value))}
+            className="w-24 accent-brand"
+          />
+          <span className="text-xs font-bold text-slate-700 w-8 text-right">{cloudThreshold}%</span>
+        </div>
         <button
           type="button"
           onClick={onToggleCollapsed}
           aria-expanded={!collapsed}
-          className="ml-auto text-slate-400 hover:text-slate-600 transition-transform duration-300"
-          style={{ transform: collapsed ? 'rotate(180deg)' : undefined }}
+          className="ml-auto text-slate-400 hover:text-slate-600"
         >
-          ▾
+          {collapsed ? '▸' : '◂'}
         </button>
       </div>
-      <div
-        className="overflow-hidden transition-[max-height] duration-300 ease-in-out"
-        style={{ maxHeight: collapsed ? 0 : 500 }}
-      >
+      <div className="overflow-hidden">
         <div className="flex overflow-x-auto gap-2 px-3 py-2.5">
           {weatherLoading && (
             <div className="flex items-center justify-center w-full py-4 text-sm text-slate-400">
