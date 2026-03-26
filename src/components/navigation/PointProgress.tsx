@@ -9,15 +9,15 @@ export default function PointProgress({
 
   return (
     <div className="w-full">
-      <div className="flex justify-between text-sm text-gray-600 mb-1">
+      <div className="flex justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
         <span>
           {completed} of {total} complete
         </span>
         <span>{Math.round(pct)}%</span>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="w-full bg-slate-100 rounded-full h-2">
         <div
-          className="bg-green-500 h-2 rounded-full transition-all"
+          className="bg-brand h-2 rounded-full transition-all duration-300"
           style={{ width: `${pct}%` }}
         />
       </div>

@@ -56,15 +56,15 @@ export default function ParameterPanel({
   };
 
   return (
-    <div className="flex flex-col gap-4 p-4 bg-white border-l border-gray-200 w-80 overflow-y-auto">
-      <h2 className="text-lg font-semibold text-gray-800">Sampling Parameters</h2>
+    <div className="flex flex-col gap-4 p-5 bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/60">
+      <h2 className="text-sm font-bold text-slate-800 uppercase tracking-widest">Sampling Parameters</h2>
 
       <div className="flex flex-col gap-2">
-        <h3 className="text-sm font-semibold text-gray-700">Define Area</h3>
+        <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Define Area</h3>
         {!isDrawing && !polygon && (
           <button
             onClick={startDrawing}
-            className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:border-brand hover:text-brand transition-colors duration-150"
           >
             Draw Polygon
           </button>
@@ -72,7 +72,7 @@ export default function ParameterPanel({
         {isDrawing && vertices.length >= 3 && (
           <button
             onClick={finishDrawing}
-            className="bg-blue-600 text-white rounded px-3 py-1.5 text-sm font-medium hover:bg-blue-700"
+            className="bg-brand text-white rounded-xl px-3 py-2 text-sm font-semibold hover:bg-brand-hover shadow-sm shadow-brand-glow transition-all duration-150"
           >
             Finish
           </button>
@@ -80,37 +80,37 @@ export default function ParameterPanel({
         {(polygon || isDrawing) && (
           <button
             onClick={clearDrawing}
-            className="border border-gray-300 rounded px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
+            className="border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-red-500 hover:border-red-300 hover:bg-red-50 transition-colors duration-150"
           >
             Clear
           </button>
         )}
         {isDrawing && (
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-slate-400">
             Click map to add points{vertices.length >= 3 ? ', double-click to finish' : ''}
           </p>
         )}
         <KmlUploader />
       </div>
 
-      <hr className="border-gray-200" />
+      <hr className="border-slate-200/60" />
 
-      <label className="flex flex-col gap-1">
-        <span className="text-sm text-gray-600">Plan Name</span>
+      <label className="flex flex-col gap-1.5">
+        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Plan Name</span>
         <input
           type="text"
-          className="border border-gray-300 rounded px-3 py-2 text-sm"
+          className="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 bg-white focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand-glow/50 transition-colors duration-150"
           value={params.name}
           onChange={(e) => setParams({ name: e.target.value })}
           placeholder="My sampling plan"
         />
       </label>
 
-      <label className="flex flex-col gap-1">
-        <span className="text-sm text-gray-600">Number of Points (1-99)</span>
+      <label className="flex flex-col gap-1.5">
+        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Number of Points (1-99)</span>
         <input
           type="number"
-          className="border border-gray-300 rounded px-3 py-2 text-sm"
+          className="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 bg-white focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand-glow/50 transition-colors duration-150"
           min={1}
           max={99}
           value={params.count}
@@ -118,10 +118,10 @@ export default function ParameterPanel({
         />
       </label>
 
-      <label className="flex flex-col gap-1">
-        <span className="text-sm text-gray-600">Sampling Type</span>
+      <label className="flex flex-col gap-1.5">
+        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Sampling Type</span>
         <select
-          className="border border-gray-300 rounded px-3 py-2 text-sm"
+          className="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 bg-white focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand-glow/50 transition-colors duration-150"
           value={params.type}
           onChange={(e) => setParams({ type: e.target.value as SamplingType })}
         >
@@ -133,11 +133,11 @@ export default function ParameterPanel({
       </label>
 
       {params.type === 'clustered' && (
-        <label className="flex flex-col gap-1">
-          <span className="text-sm text-gray-600">Number of Clusters (2+)</span>
+        <label className="flex flex-col gap-1.5">
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Number of Clusters (2+)</span>
           <input
             type="number"
-            className="border border-gray-300 rounded px-3 py-2 text-sm"
+            className="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 bg-white focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand-glow/50 transition-colors duration-150"
             min={2}
             value={params.clusterCount ?? 3}
             onChange={(e) => setParams({ clusterCount: Math.max(2, +e.target.value) })}
@@ -146,11 +146,11 @@ export default function ParameterPanel({
       )}
 
       {params.type === 'clustered' && (
-        <label className="flex flex-col gap-1">
-          <span className="text-sm text-gray-600">Min Cluster Distance (meters)</span>
+        <label className="flex flex-col gap-1.5">
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Min Cluster Distance (meters)</span>
           <input
             type="number"
-            className="border border-gray-300 rounded px-3 py-2 text-sm"
+            className="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 bg-white focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand-glow/50 transition-colors duration-150"
             min={0}
             value={params.minClusterDistance ?? 150}
             onChange={(e) => setParams({ minClusterDistance: Math.max(0, +e.target.value) })}
@@ -158,11 +158,11 @@ export default function ParameterPanel({
         </label>
       )}
 
-      <label className="flex flex-col gap-1">
-        <span className="text-sm text-gray-600">Min Distance (meters)</span>
+      <label className="flex flex-col gap-1.5">
+        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Min Distance (meters)</span>
         <input
           type="number"
-          className="border border-gray-300 rounded px-3 py-2 text-sm"
+          className="border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 bg-white focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand-glow/50 transition-colors duration-150"
           min={0}
           value={params.minDistance}
           onChange={(e) => setParams({ minDistance: Math.max(0, +e.target.value) })}
@@ -172,13 +172,13 @@ export default function ParameterPanel({
       <button
         onClick={handleGenerate}
         disabled={!storePolygon}
-        className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-brand text-white rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-brand-hover shadow-md shadow-brand-glow disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
       >
         Generate Points
       </button>
 
       {warning && (
-        <div className="bg-amber-50 border border-amber-300 text-amber-800 rounded px-3 py-2 text-sm">
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl px-3 py-2 text-xs leading-relaxed">
           {warning}
         </div>
       )}
@@ -186,7 +186,7 @@ export default function ParameterPanel({
       <button
         onClick={onShare}
         disabled={usePlanStore.getState().points.length === 0}
-        className="bg-green-600 text-white rounded px-4 py-2 text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-emerald-600 text-white rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-emerald-700 shadow-md shadow-emerald-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
       >
         Share Plan
       </button>

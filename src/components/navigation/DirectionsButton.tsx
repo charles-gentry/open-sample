@@ -11,7 +11,7 @@ export default function DirectionsButton({ lat, lng }: Props) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-md border border-gray-200 text-blue-600 hover:bg-blue-50 transition-all"
+      className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-lg border border-slate-200 text-brand hover:bg-brand-light hover:border-brand-glow transition-all duration-150"
       aria-label="Get Directions"
     >
       <svg

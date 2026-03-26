@@ -17,47 +17,49 @@ export default function WeatherDay({ day, passes, cloudThreshold, timezone }: We
 
   const isClearPass = passes.length > 0 && day.cloudCover < cloudThreshold;
   const cardClass = isClearPass
-    ? 'bg-green-50 ring-2 ring-green-400'
-    : 'bg-white border border-gray-200';
+    ? 'bg-brand-light ring-2 ring-brand border-transparent'
+    : 'bg-white/95 border border-slate-200/80 hover:border-brand-glow hover:shadow-md';
 
   return (
-    <div className={`flex flex-col gap-1 min-w-[120px] rounded-lg px-3 py-2 ${cardClass}`}>
-      <div className="flex justify-between items-center">
-        <span className="text-xs text-gray-500">{dayName}</span>
-        <span className="text-sm font-semibold">{dayNum}</span>
+    <div className={`flex flex-col gap-1.5 min-w-[100px] rounded-2xl px-2.5 py-3 transition-all duration-150 ${cardClass}`}>
+      <div className="flex flex-col items-center">
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{dayName}</span>
+        <span className="text-xl font-black text-slate-900 leading-none">{dayNum}</span>
       </div>
 
-      <span className="text-2xl text-center">{icon}</span>
+      <span className="text-2xl text-center leading-none">{icon}</span>
 
-      <span className="text-xs text-gray-600 text-center">
+      <span className="text-[11px] font-medium text-slate-600 text-center tabular-nums">
         ↑{Math.round(day.tempMax)}° ↓{Math.round(day.tempMin)}°
       </span>
 
-      <span className={`text-xs text-center ${day.cloudCover < cloudThreshold ? 'text-green-600 font-medium' : 'text-gray-400'}`}>
-        ☁️ {day.cloudCover}%
+      <span className={`text-[11px] text-center font-medium tabular-nums ${day.cloudCover < cloudThreshold ? 'text-brand font-bold' : 'text-slate-400'}`}>
+        ☁ {day.cloudCover}%
       </span>
 
       {day.precipProb > 0 && (
-        <span className="text-xs text-blue-500 text-center">💧{day.precipProb}%</span>
+        <span className="text-[11px] text-sky-500 text-center font-medium tabular-nums">💧{day.precipProb}%</span>
       )}
 
       {passes.length > 0 && (
-        <div className="mt-1 pt-1 border-t border-gray-200 flex flex-col gap-0.5">
+        <div className="mt-1 pt-1.5 border-t border-slate-200/60 flex flex-col gap-1">
           {passes.map((pass, i) => (
-            <span key={i} className="text-xs text-indigo-700 flex items-center gap-0.5">
-              🛰️
-              <span className="font-medium">{pass.satellite.replace('Sentinel-', 'S')}</span>
-              <span className="text-gray-500 ml-0.5">
+            <div key={i} className="flex items-center gap-1 bg-brand-light rounded-lg px-1.5 py-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse-dot flex-shrink-0" />
+              <span className="text-[9px] font-bold text-brand leading-none">
+                {pass.satellite.replace('Sentinel-', 'S')}
+              </span>
+              <span className="text-[9px] text-slate-500 leading-none ml-auto tabular-nums">
                 {pass.time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', timeZone: timezone })}
               </span>
-            </span>
+            </div>
           ))}
         </div>
       )}
 
       {isClearPass && (
-        <span className="text-[10px] font-bold text-green-700 text-center uppercase tracking-wide mt-0.5">
-          Clear Pass
+        <span className="text-[9px] font-black text-brand text-center uppercase tracking-widest mt-0.5">
+          ✓ Clear Pass
         </span>
       )}
     </div>

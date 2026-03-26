@@ -4,8 +4,11 @@ export default function SatellitePassIndicator({ passes, timezone }: { passes: S
   if (passes.length === 0) return null;
 
   return (
-    <div className="flex items-center gap-2 px-3 py-1 bg-indigo-50 border border-indigo-200 rounded text-xs text-indigo-700">
-      <span className="text-base">&#x1F6F0;&#xFE0F;</span>
+    <div className="flex items-center gap-2 px-3 py-2 bg-brand-light border border-brand-glow rounded-2xl text-xs text-brand">
+      <span className="flex items-center gap-1.5">
+        <span className="w-2 h-2 rounded-full bg-brand animate-pulse-dot" />
+        <span className="text-[10px] font-black uppercase tracking-widest text-brand">SAT</span>
+      </span>
       <div className="flex flex-col">
         {passes.slice(0, 3).map((pass, i) => (
           <span key={i}>
