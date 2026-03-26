@@ -22,7 +22,7 @@ export default function KmlUploader() {
   );
 
   return (
-    <label className="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded cursor-pointer border border-gray-300">
+    <label className="inline-flex items-center gap-2 px-3 py-2 text-sm bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-brand hover:text-brand text-slate-600 transition-colors duration-150">
       <span>Upload KML</span>
       <input
         type="file"

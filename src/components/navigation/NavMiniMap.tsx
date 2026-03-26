@@ -47,7 +47,7 @@ export default function NavMiniMap({
   }, [points, userLat, userLng]);
 
   return (
-    <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200">
+    <div className="relative w-full h-48 rounded-2xl overflow-hidden border border-slate-200 shadow-lg">
       {centroid && (
         <div className="absolute top-2 right-2 z-10">
           <DirectionsButton lat={centroid.lat} lng={centroid.lng} />
@@ -70,9 +70,9 @@ export default function NavMiniMap({
               'circle-color': [
                 'match',
                 ['get', 'status'],
-                'completed', '#9ca3af',
+                'completed', '#cbd5e1',
                 'current', '#e63946',
-                '#3b82f6',
+                '#4f46e5',
               ],
               'circle-stroke-width': 2,
               'circle-stroke-color': '#ffffff',
@@ -81,7 +81,7 @@ export default function NavMiniMap({
         </Source>
         {userLat != null && userLng != null && (
           <Marker longitude={userLng} latitude={userLat}>
-            <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-md" />
+            <div className="w-4 h-4 bg-brand rounded-full border-2 border-white shadow-md" />
           </Marker>
         )}
       </Map>

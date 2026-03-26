@@ -13,9 +13,9 @@ export default function PlanView() {
 
   if (isMobile) {
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center">
-        <h2 className="text-xl font-semibold text-gray-800">Desktop Only</h2>
-        <p className="text-gray-600 max-w-sm">
+      <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center bg-surface">
+        <h2 className="text-xl font-semibold text-slate-800">Desktop Only</h2>
+        <p className="text-slate-500 max-w-sm">
           Planning is designed for desktop. Open this page on a computer to draw
           your sampling area and generate points.
         </p>
@@ -24,22 +24,27 @@ export default function PlanView() {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <header className="flex items-center px-4 py-2 bg-white border-b border-gray-200">
-        <h1 className="text-lg font-bold text-gray-800">Open Sample</h1>
+    <div className="relative h-full w-full overflow-hidden">
+      {/* Full-screen map */}
+      <div className="absolute inset-0">
+        <PlanMap
+          isDrawing={draw.isDrawing}
+          handleClick={draw.handleClick}
+          finishDrawing={draw.finishDrawing}
+          verticesGeoJson={draw.verticesGeoJson}
+          lineGeoJson={draw.lineGeoJson}
+          previewPolygonGeoJson={draw.previewPolygonGeoJson}
+          polygonGeoJson={draw.polygonGeoJson}
+        />
+      </div>
+
+      {/* Floating brand header pill */}
+      <header className="absolute top-4 left-4 z-20 flex items-center px-4 py-2 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200/60">
+        <h1 className="text-sm font-bold text-slate-800 tracking-wide uppercase">Open Sample</h1>
       </header>
-      <div className="flex flex-1 min-h-0">
-        <div className="flex-1">
-          <PlanMap
-            isDrawing={draw.isDrawing}
-            handleClick={draw.handleClick}
-            finishDrawing={draw.finishDrawing}
-            verticesGeoJson={draw.verticesGeoJson}
-            lineGeoJson={draw.lineGeoJson}
-            previewPolygonGeoJson={draw.previewPolygonGeoJson}
-            polygonGeoJson={draw.polygonGeoJson}
-          />
-        </div>
+
+      {/* Floating ParameterPanel */}
+      <div className="absolute top-4 right-4 bottom-52 z-20 w-80 overflow-y-auto">
         <ParameterPanel
           onShare={() => setShowShare(true)}
           isDrawing={draw.isDrawing}
@@ -50,7 +55,12 @@ export default function PlanView() {
           clearDrawing={draw.clearDrawing}
         />
       </div>
-      <CalendarStrip />
+
+      {/* Floating CalendarStrip */}
+      <div className="absolute bottom-4 left-4 right-[22rem] z-20">
+        <CalendarStrip />
+      </div>
+
       {showShare && <ShareDialog onClose={() => setShowShare(false)} />}
     </div>
   );

@@ -4,3 +4,20 @@ html, body, #root {
   height: 100%;
   margin: 0;
 }
+
+@theme {
+  --color-brand: #4f46e5;
+  --color-brand-hover: #4338ca;
+  --color-brand-light: #eef2ff;
+  --color-brand-glow: #c7d2fe;
+  --color-surface: #f8fafc;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}

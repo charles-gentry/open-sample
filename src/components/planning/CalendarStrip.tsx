@@ -55,32 +55,32 @@ export default function CalendarStrip() {
 
   if (!polygon) {
     return (
-      <div className="h-28 bg-gray-50 border-t border-gray-200 flex items-center justify-center text-sm text-gray-400">
+      <div className="h-20 bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/60 flex items-center justify-center text-sm text-slate-400">
         Draw a polygon to see weather forecast and satellite passes
       </div>
     );
   }
 
   return (
-    <div className="bg-white border-t border-gray-200">
-      <div className="flex items-center gap-3 px-3 py-2 border-b border-gray-100">
-        <span className="text-xs font-medium text-gray-500 shrink-0">14-Day Forecast</span>
+    <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/60 overflow-hidden">
+      <div className="flex items-center gap-3 px-4 py-2.5 border-b border-slate-100/80">
+        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">14-Day Forecast</span>
         <div className="flex items-center gap-2 ml-auto">
-          <span className="text-xs text-gray-500 shrink-0">☁️ Clear pass &lt;</span>
+          <span className="text-xs text-slate-400 shrink-0">☁️ Clear pass &lt;</span>
           <input
             type="range"
             min={0}
             max={100}
             value={cloudThreshold}
             onChange={(e) => setCloudThreshold(Number(e.target.value))}
-            className="w-24 accent-green-500"
+            className="w-24 accent-brand"
           />
-          <span className="text-xs font-medium text-gray-700 w-8 text-right">{cloudThreshold}%</span>
+          <span className="text-xs font-bold text-slate-700 w-8 text-right">{cloudThreshold}%</span>
         </div>
       </div>
-      <div className="flex overflow-x-auto gap-2 px-2 py-2">
+      <div className="flex overflow-x-auto gap-2 px-3 py-2.5">
         {weatherLoading && (
-          <div className="flex items-center justify-center w-full py-4 text-sm text-gray-400">
+          <div className="flex items-center justify-center w-full py-4 text-sm text-slate-400">
             Loading weather...
           </div>
         )}

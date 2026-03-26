@@ -45,7 +45,7 @@ export default function CompassArrow({ rotation }: Props) {
           stroke="#fff"
           strokeWidth="2"
         />
-        <circle cx="50" cy="50" r="4" fill="#1d3557" />
+        <circle cx="50" cy="50" r="4" fill="#4f46e5" />
       </svg>
     </div>
   );
