@@ -57,7 +57,7 @@ export default function PlanView() {
       </div>
 
       {/* Floating CalendarStrip */}
-      <div className="absolute bottom-4 left-4 right-[22rem] z-20">
+      <div className="absolute bottom-4 left-4 z-20">
         <CalendarStrip />
       </div>
 
