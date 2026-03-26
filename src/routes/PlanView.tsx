@@ -9,7 +9,6 @@ import { useIsMobile } from '../hooks/useIsMobile';
 export default function PlanView() {
   const isMobile = useIsMobile();
   const [showShare, setShowShare] = useState(false);
-  const [calendarCollapsed, setCalendarCollapsed] = useState(false);
   const draw = usePolygonDraw();
 
   if (isMobile) {
@@ -45,7 +44,7 @@ export default function PlanView() {
       </header>
 
       {/* Floating ParameterPanel */}
-      <div className={`absolute top-4 right-4 z-20 w-80 overflow-y-auto transition-all duration-300 ${calendarCollapsed ? 'bottom-16' : 'bottom-52'}`}>
+      <div className="absolute top-4 right-4 bottom-52 z-20 w-80 overflow-y-auto">
         <ParameterPanel
           onShare={() => setShowShare(true)}
           isDrawing={draw.isDrawing}
@@ -59,7 +58,7 @@ export default function PlanView() {
 
       {/* Floating CalendarStrip */}
       <div className="absolute bottom-4 left-4 right-[22rem] z-20">
-        <CalendarStrip collapsed={calendarCollapsed} onToggleCollapsed={() => setCalendarCollapsed((v) => !v)} />
+        <CalendarStrip />
       </div>
 
       {showShare && <ShareDialog onClose={() => setShowShare(false)} />}
