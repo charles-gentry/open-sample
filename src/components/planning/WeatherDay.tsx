@@ -18,21 +18,17 @@ export default function WeatherDay({ day, passes, cloudThreshold, timezone, sele
   const dayNum = date.getDate();
 
   const isClearPass = passes.length > 0 && day.cloudCover < cloudThreshold;
-  const cardBase = isClearPass
-    ? 'bg-brand-light border-transparent'
+  const cardClass = isClearPass
+    ? 'bg-brand-light ring-2 ring-brand border-transparent'
     : 'bg-white/95 border border-slate-200/80 hover:border-brand-glow hover:shadow-md';
 
-  const ringClass = selected
-    ? 'ring-3 ring-select ring-offset-2 shadow-lg'
-    : isClearPass
-      ? 'ring-2 ring-brand'
-      : '';
+  const selectedClass = selected ? 'ring-2 ring-brand ring-offset-2' : '';
 
   return (
     <button
       type="button"
       onClick={() => onSelect?.(day.date)}
-      className={`flex flex-col gap-1.5 min-w-[100px] rounded-2xl px-2.5 py-3 transition-all duration-150 text-left ${cardBase} ${ringClass}`}
+      className={`flex flex-col gap-1.5 min-w-[100px] rounded-2xl px-2.5 py-3 transition-all duration-150 text-left ${cardClass} ${selectedClass}`}
     >
       <div className="flex flex-col items-center w-full">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{dayName}</span>
