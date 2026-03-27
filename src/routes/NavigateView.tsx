@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { decodePlan } from '../services/sharing';
 import { useNavStore } from '../stores/navStore';
@@ -27,6 +27,7 @@ export default function NavigateView() {
   } = useNavStore();
   const { position, error: geoError } = useGeolocation();
   const { heading, needsPermission, requestPermission } = useCompass();
+  const [targetDate, setTargetDate] = useState<string | null>(null);
 
   // Decode plan from URL
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function NavigateView() {
         lat: pt.lat,
       }));
       setPlan(decoded.name, navPoints);
+      setTargetDate(decoded.targetDate);
     } catch (e) {
       console.error('Failed to decode plan:', e);
     }
@@ -124,6 +126,9 @@ export default function NavigateView() {
   const isMobile = useIsMobile();
   const allDone = points.length > 0 && completedIds.size >= points.length;
 
+  const today = new Date().toLocaleDateString('en-CA');
+  const isOffTargetDate = targetDate !== null && today !== targetDate;
+
   if (!isMobile) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center bg-surface">
@@ -146,6 +151,12 @@ export default function NavigateView() {
         <h2 className="text-base font-bold text-slate-800 text-center tracking-tight">
           {planName}
         </h2>
+      )}
+
+      {isOffTargetDate && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-700 text-center">
+          Target sampling date: {new Date(targetDate + 'T00:00:00').toLocaleDateString('en', { weekday: 'short', month: 'short', day: 'numeric' })}
+        </div>
       )}
 
       {needsPermission && (

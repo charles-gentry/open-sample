@@ -4,13 +4,13 @@ import { usePlanStore } from '../../stores/planStore';
 import { encodePlan } from '../../services/sharing';
 
 export default function ShareDialog({ onClose }: { onClose: () => void }) {
-  const { params, points } = usePlanStore();
+  const { params, points, targetDate } = usePlanStore();
   const [copied, setCopied] = useState(false);
 
   const url = useMemo(() => {
-    const encoded = encodePlan(params.name, points, params.type);
+    const encoded = encodePlan(params.name, points, params.type, targetDate);
     return `${window.location.origin}/navigate/${encoded}`;
-  }, [params.name, points, params.type]);
+  }, [params.name, points, params.type, targetDate]);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(url);
