@@ -11,6 +11,8 @@ html, body, #root {
   --color-brand-light: #eef2ff;
   --color-brand-glow: #c7d2fe;
   --color-surface: #f8fafc;
+  --color-select: #f59e0b;
+  --color-select-light: #fef3c7;
 }
 
 @keyframes pulse-dot {
