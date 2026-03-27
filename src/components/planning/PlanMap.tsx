@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import Map, { Source, Layer } from 'react-map-gl/maplibre';
 import type { MapLayerMouseEvent, MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -26,27 +26,19 @@ export default function PlanMap({
   const points = usePlanStore((s) => s.points);
 
   const mapRef = useRef<MapRef>(null);
-  const pendingCenter = useRef<[number, number] | null>(null);
-  const mapLoaded = useRef(false);
-
-  useEffect(() => {
-    if (!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition(({ coords }) => {
-      const center: [number, number] = [coords.longitude, coords.latitude];
-      if (mapLoaded.current && mapRef.current) {
-        mapRef.current.flyTo({ center, zoom: 10 });
-      } else {
-        pendingCenter.current = center;
-      }
-    });
-  }, []);
 
   const onLoad = useCallback(() => {
-    mapLoaded.current = true;
-    if (pendingCenter.current) {
-      mapRef.current?.flyTo({ center: pendingCenter.current, zoom: 10 });
-      pendingCenter.current = null;
-    }
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        mapRef.current?.flyTo({
+          center: [coords.longitude, coords.latitude],
+          zoom: 10,
+        });
+      },
+      () => {},
+      { enableHighAccuracy: false, timeout: 10_000, maximumAge: 300_000 }
+    );
   }, []);
 
   const onClick = useCallback(
