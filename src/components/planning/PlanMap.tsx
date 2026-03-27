@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useRef } from 'react';
 import Map, { Source, Layer } from 'react-map-gl/maplibre';
-import type { MapLayerMouseEvent } from 'react-map-gl/maplibre';
+import type { MapLayerMouseEvent, MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { usePlanStore } from '../../stores/planStore';
-
-const DEFAULT_VIEW = { longitude: -98.5, latitude: 39.8, zoom: 4 };
 
 interface PlanMapProps {
   isDrawing: boolean;
@@ -26,24 +24,28 @@ export default function PlanMap({
   polygonGeoJson,
 }: PlanMapProps) {
   const points = usePlanStore((s) => s.points);
+  const mapRef = useRef<MapRef>(null);
 
-  const [initialView, setInitialView] = useState<{
-    longitude: number;
-    latitude: number;
-    zoom: number;
-  } | null>(null);
-
-  useEffect(() => {
+  const onLoad = useCallback(() => {
+    console.log('[PlanMap] onLoad fired, mapRef available:', !!mapRef.current);
     if (!navigator.geolocation) {
-      setInitialView(DEFAULT_VIEW);
+      console.log('[PlanMap] Geolocation API not available');
       return;
     }
+    console.log('[PlanMap] Requesting geolocation...');
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        setInitialView({ longitude: coords.longitude, latitude: coords.latitude, zoom: 10 });
+        console.log('[PlanMap] Geolocation success:', coords.latitude, coords.longitude);
+        const map = mapRef.current?.getMap();
+        console.log('[PlanMap] Native map instance available:', !!map);
+        if (map) {
+          map.setCenter([coords.longitude, coords.latitude]);
+          map.setZoom(10);
+          console.log('[PlanMap] Center applied:', map.getCenter());
+        }
       },
-      () => {
-        setInitialView(DEFAULT_VIEW);
+      (err) => {
+        console.log('[PlanMap] Geolocation error:', err.code, err.message);
       },
       { enableHighAccuracy: false, timeout: 10_000, maximumAge: 300_000 }
     );
@@ -74,19 +76,17 @@ export default function PlanMap({
     })),
   };
 
-  if (!initialView) {
-    return <div className="relative w-full h-full" />;
-  }
-
   return (
     <div className="relative w-full h-full">
       <Map
-        initialViewState={initialView}
+        ref={mapRef}
+        initialViewState={{ longitude: -98.5, latitude: 39.8, zoom: 4 }}
         style={{ width: '100%', height: '100%' }}
         mapStyle="https://tiles.openfreemap.org/styles/liberty"
         cursor={isDrawing ? 'crosshair' : undefined}
         onClick={onClick}
         onDblClick={onDblClick}
+        onLoad={onLoad}
       >
         {/* Finalized polygon (drawn or KML-uploaded) */}
         <Source id="polygon-fill" type="geojson" data={polygonGeoJson}>
