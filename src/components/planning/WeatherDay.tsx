@@ -57,7 +57,7 @@ export default function WeatherDay({ day, passes, cloudThreshold, timezone, sele
               <span className="text-[9px] font-bold text-brand leading-none">
                 {pass.satellite.replace('Sentinel-', 'S')}
               </span>
-              <span className="text-[9px] text-slate-500 leading-none ml-auto tabular-nums">
+              <span className="text-[9px] text-slate-500 leading-none ml-auto tabular-nums whitespace-nowrap">
                 {pass.time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', timeZone: timezone })}
               </span>
             </div>
