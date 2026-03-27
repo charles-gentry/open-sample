@@ -18,7 +18,8 @@ const REVERSE_TYPE_MAP: Record<string, SamplingType> = {
 export function encodePlan(
   name: string,
   points: SamplingPoint[],
-  type: SamplingType
+  type: SamplingType,
+  targetDate?: string | null
 ): string {
   const payload: SharePayload = {
     v: 1,
@@ -28,6 +29,7 @@ export function encodePlan(
       Math.round(pt.lat * 1e6) / 1e6,
     ]),
     t: TYPE_MAP[type],
+    ...(targetDate ? { d: targetDate } : {}),
   };
   return compress(JSON.stringify(payload));
 }
@@ -36,6 +38,7 @@ export interface DecodedPlan {
   name: string;
   points: SamplingPoint[];
   type: SamplingType;
+  targetDate: string | null;
 }
 
 export function decodePlan(encoded: string): DecodedPlan {
@@ -46,5 +49,6 @@ export function decodePlan(encoded: string): DecodedPlan {
     name: payload.n,
     points: payload.p.map(([lng, lat]) => ({ lng, lat })),
     type: REVERSE_TYPE_MAP[payload.t] || 'random',
+    targetDate: payload.d ?? null,
   };
 }

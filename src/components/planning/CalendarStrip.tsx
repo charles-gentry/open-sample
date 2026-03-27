@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef, useCallback } from 'react';
 import * as turf from '@turf/turf';
 import { usePlanStore } from '../../stores/planStore';
 import { useWeather } from '../../hooks/useWeather';
@@ -8,8 +8,38 @@ import WeatherDay from './WeatherDay';
 
 export default function CalendarStrip() {
   const polygon = usePlanStore((s) => s.polygon);
+  const targetDate = usePlanStore((s) => s.targetDate);
+  const setTargetDate = usePlanStore((s) => s.setTargetDate);
   const [cloudThreshold, setCloudThreshold] = useState(30);
   const [expanded, setExpanded] = useState(false);
+
+  // Drag-to-scroll state
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragState = useRef({ startX: 0, scrollLeft: 0, didDrag: false });
+
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setIsDragging(true);
+    dragState.current = { startX: e.pageX, scrollLeft: el.scrollLeft, didDrag: false };
+  }, []);
+
+  const onMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    const dx = e.pageX - dragState.current.startX;
+    if (Math.abs(dx) > 3) dragState.current.didDrag = true;
+    scrollRef.current.scrollLeft = dragState.current.scrollLeft - dx;
+  }, [isDragging]);
+
+  const onMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  const handleSelectDate = useCallback((date: string) => {
+    if (dragState.current.didDrag) return;
+    setTargetDate(targetDate === date ? null : date);
+  }, [targetDate, setTargetDate]);
 
   const centroid = useMemo(() => {
     if (!polygon) return null;
@@ -82,7 +112,7 @@ export default function CalendarStrip() {
       <div className="flex items-stretch">
         <div className={`overflow-hidden transition-[width] duration-300 ease-in-out ${panelWidthClass}`}>
           <div
-            className="h-20 bg-white/90 backdrop-blur-md rounded-l-2xl shadow-2xl border border-slate-200/60 flex items-center justify-center text-sm text-slate-400"
+            className="h-[220px] bg-white/90 backdrop-blur-md shadow-2xl border border-l-0 border-slate-200/60 flex items-center justify-center text-sm text-slate-400"
             style={{ minWidth: 'calc(100vw - 23rem)' }}
           >
             Draw a polygon to see weather forecast and satellite passes
@@ -97,7 +127,7 @@ export default function CalendarStrip() {
     <div className="flex items-stretch">
       <div className={`overflow-hidden transition-[width] duration-300 ease-in-out ${panelWidthClass}`}>
         <div
-          className="bg-white/90 backdrop-blur-md rounded-l-2xl shadow-2xl border border-slate-200/60 overflow-hidden"
+          className="bg-white/90 backdrop-blur-md shadow-2xl border border-l-0 border-slate-200/60 overflow-hidden h-[220px]"
           style={{ minWidth: 'calc(100vw - 23rem)' }}
         >
           <div className="flex items-center gap-3 px-4 py-2.5 border-b border-slate-100/80">
@@ -115,7 +145,14 @@ export default function CalendarStrip() {
               <span className="text-xs font-bold text-slate-700 w-8 text-right">{cloudThreshold}%</span>
             </div>
           </div>
-          <div className="flex overflow-x-auto gap-2 px-3 py-2.5">
+          <div
+            ref={scrollRef}
+            className={`flex overflow-x-auto scrollbar-hide gap-2 px-3 py-2.5 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseUp}
+          >
             {weatherLoading && (
               <div className="flex items-center justify-center w-full py-4 text-sm text-slate-400">
                 Loading weather...
@@ -128,6 +165,8 @@ export default function CalendarStrip() {
                 passes={passesByDate.get(day.date) ?? []}
                 cloudThreshold={cloudThreshold}
                 timezone={timezone}
+                selected={targetDate === day.date}
+                onSelect={handleSelectDate}
               />
             ))}
           </div>

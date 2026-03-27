@@ -25,4 +25,5 @@ export interface SharePayload {
   n: string;
   p: [number, number][]; // [lng, lat] pairs
   t: 'r' | 'g' | 'c' | 'w';
+  d?: string; // target sample date (ISO date string)
 }
