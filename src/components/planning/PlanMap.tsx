@@ -27,12 +27,13 @@ export default function PlanMap({
 
   const mapRef = useRef<MapRef>(null);
   const pendingCenter = useRef<[number, number] | null>(null);
+  const mapLoaded = useRef(false);
 
   useEffect(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(({ coords }) => {
       const center: [number, number] = [coords.longitude, coords.latitude];
-      if (mapRef.current) {
+      if (mapLoaded.current && mapRef.current) {
         mapRef.current.flyTo({ center, zoom: 10 });
       } else {
         pendingCenter.current = center;
@@ -41,6 +42,7 @@ export default function PlanMap({
   }, []);
 
   const onLoad = useCallback(() => {
+    mapLoaded.current = true;
     if (pendingCenter.current) {
       mapRef.current?.flyTo({ center: pendingCenter.current, zoom: 10 });
       pendingCenter.current = null;
