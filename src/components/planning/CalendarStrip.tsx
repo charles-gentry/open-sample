@@ -112,7 +112,7 @@ export default function CalendarStrip() {
       <div className="flex items-stretch">
         <div className={`overflow-hidden transition-[width] duration-300 ease-in-out ${panelWidthClass}`}>
           <div
-            className="h-[220px] bg-white/90 backdrop-blur-md shadow-2xl border border-l-0 border-slate-200/60 flex items-center justify-center text-sm text-slate-400"
+            className="h-[310px] bg-white/90 backdrop-blur-md shadow-2xl border border-l-0 border-slate-200/60 flex items-center justify-center text-sm text-slate-400"
             style={{ minWidth: 'calc(100vw - 23rem)' }}
           >
             Draw a polygon to see weather forecast and satellite passes
@@ -127,7 +127,7 @@ export default function CalendarStrip() {
     <div className="flex items-stretch">
       <div className={`overflow-hidden transition-[width] duration-300 ease-in-out ${panelWidthClass}`}>
         <div
-          className="bg-white/90 backdrop-blur-md shadow-2xl border border-l-0 border-slate-200/60 overflow-hidden h-[220px]"
+          className="bg-white/90 backdrop-blur-md shadow-2xl border border-l-0 border-slate-200/60 overflow-hidden h-[310px]"
           style={{ minWidth: 'calc(100vw - 23rem)' }}
         >
           <div className="flex items-center gap-3 px-4 py-2.5 border-b border-slate-100/80">
