@@ -1,8 +1,10 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Map, { Source, Layer } from 'react-map-gl/maplibre';
-import type { MapLayerMouseEvent, MapRef } from 'react-map-gl/maplibre';
+import type { MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { usePlanStore } from '../../stores/planStore';
+
+const DEFAULT_VIEW = { longitude: -98.5, latitude: 39.8, zoom: 4 };
 
 interface PlanMapProps {
   isDrawing: boolean;
@@ -25,18 +27,24 @@ export default function PlanMap({
 }: PlanMapProps) {
   const points = usePlanStore((s) => s.points);
 
-  const mapRef = useRef<MapRef>(null);
+  const [initialView, setInitialView] = useState<{
+    longitude: number;
+    latitude: number;
+    zoom: number;
+  } | null>(null);
 
-  const onLoad = useCallback(() => {
-    if (!navigator.geolocation) return;
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setInitialView(DEFAULT_VIEW);
+      return;
+    }
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        mapRef.current?.flyTo({
-          center: [coords.longitude, coords.latitude],
-          zoom: 10,
-        });
+        setInitialView({ longitude: coords.longitude, latitude: coords.latitude, zoom: 10 });
       },
-      () => {},
+      () => {
+        setInitialView(DEFAULT_VIEW);
+      },
       { enableHighAccuracy: false, timeout: 10_000, maximumAge: 300_000 }
     );
   }, []);
@@ -66,17 +74,19 @@ export default function PlanMap({
     })),
   };
 
+  if (!initialView) {
+    return <div className="relative w-full h-full" />;
+  }
+
   return (
     <div className="relative w-full h-full">
       <Map
-        ref={mapRef}
-        initialViewState={{ longitude: -98.5, latitude: 39.8, zoom: 4 }}
+        initialViewState={initialView}
         style={{ width: '100%', height: '100%' }}
         mapStyle="https://tiles.openfreemap.org/styles/liberty"
         cursor={isDrawing ? 'crosshair' : undefined}
         onClick={onClick}
         onDblClick={onDblClick}
-        onLoad={onLoad}
       >
         {/* Finalized polygon (drawn or KML-uploaded) */}
         <Source id="polygon-fill" type="geojson" data={polygonGeoJson}>
