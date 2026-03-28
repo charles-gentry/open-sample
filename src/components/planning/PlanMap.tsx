@@ -27,25 +27,43 @@ export default function PlanMap({
   const mapRef = useRef<MapRef>(null);
 
   const onLoad = useCallback(() => {
-    console.log('[PlanMap] onLoad fired, mapRef available:', !!mapRef.current);
+    const centerMap = (lng: number, lat: number) => {
+      const map = mapRef.current?.getMap();
+      if (map) {
+        map.setCenter([lng, lat]);
+        map.setZoom(10);
+        console.log('[PlanMap] Map centered on:', lat, lng);
+      }
+    };
+
+    const ipFallback = () => {
+      console.log('[PlanMap] Trying IP geolocation fallback...');
+      fetch('https://ipapi.co/json/')
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.latitude && data.longitude) {
+            console.log('[PlanMap] IP geolocation:', data.latitude, data.longitude);
+            centerMap(data.longitude, data.latitude);
+          }
+        })
+        .catch(() => {
+          console.log('[PlanMap] IP geolocation also failed');
+        });
+    };
+
     if (!navigator.geolocation) {
-      console.log('[PlanMap] Geolocation API not available');
+      ipFallback();
       return;
     }
-    console.log('[PlanMap] Requesting geolocation...');
+
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        console.log('[PlanMap] Geolocation success:', coords.latitude, coords.longitude);
-        const map = mapRef.current?.getMap();
-        console.log('[PlanMap] Native map instance available:', !!map);
-        if (map) {
-          map.setCenter([coords.longitude, coords.latitude]);
-          map.setZoom(10);
-          console.log('[PlanMap] Center applied:', map.getCenter());
-        }
+        console.log('[PlanMap] Browser geolocation:', coords.latitude, coords.longitude);
+        centerMap(coords.longitude, coords.latitude);
       },
       (err) => {
-        console.log('[PlanMap] Geolocation error:', err.code, err.message);
+        console.log('[PlanMap] Browser geolocation failed:', err.code, err.message, '- trying IP fallback');
+        ipFallback();
       },
       { enableHighAccuracy: false, timeout: 10_000, maximumAge: 300_000 }
     );
