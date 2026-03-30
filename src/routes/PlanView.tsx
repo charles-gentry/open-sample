@@ -91,7 +91,7 @@ export default function PlanView() {
       </header>
 
       {/* Floating ParameterPanel */}
-      <div className="absolute top-4 right-4 bottom-52 z-20 w-80 overflow-y-auto">
+      <div className="absolute top-4 right-4 z-20 w-80">
         <ParameterPanel
           isDrawing={draw.isDrawing}
           vertices={draw.vertices}
