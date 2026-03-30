@@ -120,10 +120,16 @@ export default function PlanView() {
         />
       </div>
 
-      {/* Floating brand header pill */}
-      <header className="absolute top-4 left-4 z-20 flex items-center px-4 py-2 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200/60">
-        <h1 className="text-sm font-bold text-slate-800 tracking-wide uppercase">Open Sample</h1>
-      </header>
+      {/* Floating GitHub link (top left) */}
+      <a
+        href="https://github.com/charles-gentry/open-sample"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute top-4 left-4 z-20 flex items-center justify-center w-10 h-10 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200/60 text-slate-700 hover:text-slate-900 transition-colors"
+        aria-label="View on GitHub"
+      >
+        <svg className="w-5 h-5"><use href="/icons.svg#github-icon" /></svg>
+      </a>
 
       {/* Editable plan name header (top centre) */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
