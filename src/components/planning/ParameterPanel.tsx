@@ -10,7 +10,6 @@ import CollapsibleSection from './CollapsibleSection';
 import FormField, { fieldClass } from './FormField';
 
 interface ParameterPanelProps {
-  onShare: () => void;
   isDrawing: boolean;
   vertices: [number, number][];
   polygon: GeoJSON.Feature<GeoJSON.Polygon> | null;
@@ -27,7 +26,6 @@ const TYPE_LABELS: Record<SamplingType, string> = {
 };
 
 export default function ParameterPanel({
-  onShare,
   isDrawing,
   vertices,
   polygon,
@@ -214,10 +212,10 @@ export default function ParameterPanel({
 
       <hr className="border-slate-200/60" />
 
-      {/* Section 3: Generate & Share (always visible, not collapsible) */}
+      {/* Section 3: Generate (always visible, not collapsible) */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Generate & Share</span>
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Generate</span>
           {generateStatus && (
             <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
               {generateStatus.label}
@@ -239,13 +237,6 @@ export default function ParameterPanel({
           </div>
         )}
 
-        <button
-          onClick={onShare}
-          disabled={pointCount === 0}
-          className="bg-emerald-600 text-white rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-emerald-700 shadow-md shadow-emerald-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
-        >
-          Share Plan
-        </button>
       </div>
     </div>
   );
