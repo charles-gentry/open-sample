@@ -12,6 +12,7 @@ interface PlanMapProps {
   lineGeoJson: GeoJSON.FeatureCollection;
   previewPolygonGeoJson: GeoJSON.FeatureCollection;
   polygonGeoJson: GeoJSON.FeatureCollection;
+  initialCenter: { lng: number; lat: number };
 }
 
 export default function PlanMap({
@@ -22,50 +23,30 @@ export default function PlanMap({
   lineGeoJson,
   previewPolygonGeoJson,
   polygonGeoJson,
+  initialCenter,
 }: PlanMapProps) {
   const points = usePlanStore((s) => s.points);
   const mapRef = useRef<MapRef>(null);
 
   const onLoad = useCallback(() => {
-    const centerMap = (lng: number, lat: number) => {
-      const map = mapRef.current?.getMap();
-      if (map) {
-        map.setCenter([lng, lat]);
-        map.setZoom(10);
-        console.log('[PlanMap] Map centered on:', lat, lng);
-      }
-    };
-
-    const ipFallback = () => {
-      console.log('[PlanMap] Trying IP geolocation fallback...');
-      fetch('https://ipapi.co/json/')
-        .then((r) => r.json())
-        .then((data) => {
-          if (data.latitude && data.longitude) {
-            console.log('[PlanMap] IP geolocation:', data.latitude, data.longitude);
-            centerMap(data.longitude, data.latitude);
-          }
-        })
-        .catch(() => {
-          console.log('[PlanMap] IP geolocation also failed');
-        });
-    };
-
-    if (!navigator.geolocation) {
-      ipFallback();
-      return;
-    }
+    if (!navigator.geolocation) return;
 
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        console.log('[PlanMap] Browser geolocation:', coords.latitude, coords.longitude);
-        centerMap(coords.longitude, coords.latitude);
+        const map = mapRef.current?.getMap();
+        if (map) {
+          console.log('[PlanMap] Browser geolocation:', coords.latitude, coords.longitude);
+          map.flyTo({
+            center: [coords.longitude, coords.latitude],
+            zoom: 13,
+            duration: 2000,
+          });
+        }
       },
       (err) => {
-        console.log('[PlanMap] Browser geolocation failed:', err.code, err.message, '- trying IP fallback');
-        ipFallback();
+        console.log('[PlanMap] Browser geolocation unavailable:', err.code, err.message);
       },
-      { enableHighAccuracy: false, timeout: 10_000, maximumAge: 300_000 }
+      { enableHighAccuracy: true, timeout: 10_000, maximumAge: 300_000 }
     );
   }, []);
 
@@ -98,7 +79,7 @@ export default function PlanMap({
     <div className="relative w-full h-full">
       <Map
         ref={mapRef}
-        initialViewState={{ longitude: -98.5, latitude: 39.8, zoom: 4 }}
+        initialViewState={{ longitude: initialCenter.lng, latitude: initialCenter.lat, zoom: 10 }}
         style={{ width: '100%', height: '100%' }}
         mapStyle="https://tiles.openfreemap.org/styles/liberty"
         cursor={isDrawing ? 'crosshair' : undefined}

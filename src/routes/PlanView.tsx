@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PlanMap from '../components/planning/PlanMap';
 import ParameterPanel from '../components/planning/ParameterPanel';
 import CalendarStrip from '../components/planning/CalendarStrip';
@@ -6,10 +6,45 @@ import ShareDialog from '../components/planning/ShareDialog';
 import { usePolygonDraw } from '../hooks/usePolygonDraw';
 import { useIsMobile } from '../hooks/useIsMobile';
 
+const DEFAULT_CENTER = { lng: -98.5, lat: 39.8 };
+
+function useCoarseLocation() {
+  const [center, setCenter] = useState<{ lng: number; lat: number } | null>(null);
+  const [status, setStatus] = useState('Locating you…');
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchLocation() {
+      try {
+        setStatus('Getting your approximate location…');
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        if (!cancelled && data.latitude && data.longitude) {
+          console.log('[PlanView] IP geolocation:', data.latitude, data.longitude);
+          setCenter({ lng: data.longitude, lat: data.latitude });
+          return;
+        }
+      } catch {
+        console.log('[PlanView] IP geolocation failed');
+      }
+      if (!cancelled) {
+        setCenter(DEFAULT_CENTER);
+      }
+    }
+
+    fetchLocation();
+    return () => { cancelled = true; };
+  }, []);
+
+  return { center, status };
+}
+
 export default function PlanView() {
   const isMobile = useIsMobile();
   const [showShare, setShowShare] = useState(false);
   const draw = usePolygonDraw();
+  const { center, status } = useCoarseLocation();
 
   if (isMobile) {
     return (
@@ -19,6 +54,15 @@ export default function PlanView() {
           Planning is designed for desktop. Open this page on a computer to draw
           your sampling area and generate points.
         </p>
+      </div>
+    );
+  }
+
+  if (!center) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full gap-4 bg-surface">
+        <div className="h-10 w-10 rounded-full border-4 border-brand border-t-transparent animate-spin" />
+        <p className="text-sm text-slate-500">{status}</p>
       </div>
     );
   }
@@ -35,6 +79,7 @@ export default function PlanView() {
           lineGeoJson={draw.lineGeoJson}
           previewPolygonGeoJson={draw.previewPolygonGeoJson}
           polygonGeoJson={draw.polygonGeoJson}
+          initialCenter={center}
         />
       </div>
 
