@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
 import { usePlanStore } from '../../stores/planStore';
-import { generateRandom } from '../../algorithms/random';
-import { generateGrid } from '../../algorithms/grid';
-import { generateClustered } from '../../algorithms/clustered';
-import { generateW } from '../../algorithms/w';
 import type { SamplingType } from '../../types/plan';
 import KmlUploader from './KmlUploader';
 import CollapsibleSection from './CollapsibleSection';
@@ -33,8 +29,7 @@ export default function ParameterPanel({
   finishDrawing,
   clearDrawing,
 }: ParameterPanelProps) {
-  const { params, polygon: storePolygon, setParams, setPoints } = usePlanStore();
-  const [warning, setWarning] = useState<string | null>(null);
+  const { params, polygon: storePolygon, setParams } = usePlanStore();
   const [areaOpen, setAreaOpen] = useState(true);
   const [configOpen, setConfigOpen] = useState(false);
 
@@ -49,44 +44,12 @@ export default function ParameterPanel({
     }
   }, [storePolygon]);
 
-  const handleGenerate = () => {
-    if (!storePolygon) return;
-    let pts;
-    switch (params.type) {
-      case 'grid':
-        pts = generateGrid(storePolygon, params.count, params.minDistance);
-        break;
-      case 'clustered':
-        pts = generateClustered(storePolygon, params.count, params.minDistance, params.clusterCount ?? 3, params.minClusterDistance ?? 150);
-        break;
-      case 'w':
-        pts = generateW(storePolygon, params.count, params.minDistance);
-        break;
-      default:
-        pts = generateRandom(storePolygon, params.count, params.minDistance);
-    }
-    setPoints(pts);
-    if (pts.length < params.count) {
-      setWarning(
-        `Only ${pts.length} of ${params.count} points could be placed. Try reducing the minimum distance or the number of points.`
-      );
-    } else {
-      setWarning(null);
-    }
-  };
-
-  const pointCount = usePlanStore.getState().points.length;
-
   const areaStatus = storePolygon
     ? { label: 'Defined', color: 'green' as const }
     : undefined;
 
   const configStatus = storePolygon
     ? { label: `${TYPE_LABELS[params.type]} · ${params.count} pts`, color: 'slate' as const }
-    : undefined;
-
-  const generateStatus = pointCount > 0
-    ? { label: `${pointCount} points`, color: 'green' as const }
     : undefined;
 
   return (
@@ -209,35 +172,6 @@ export default function ParameterPanel({
           />
         </FormField>
       </CollapsibleSection>
-
-      <hr className="border-slate-200/60" />
-
-      {/* Section 3: Generate (always visible, not collapsible) */}
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Generate</span>
-          {generateStatus && (
-            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
-              {generateStatus.label}
-            </span>
-          )}
-        </div>
-
-        <button
-          onClick={handleGenerate}
-          disabled={!storePolygon}
-          className="bg-brand text-white rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-brand-hover shadow-md shadow-brand-glow disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
-        >
-          Generate Points
-        </button>
-
-        {warning && (
-          <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl px-3 py-2 text-xs leading-relaxed">
-            {warning}
-          </div>
-        )}
-
-      </div>
     </div>
   );
 }

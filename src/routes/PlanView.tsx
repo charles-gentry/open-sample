@@ -6,6 +6,10 @@ import ShareDialog from '../components/planning/ShareDialog';
 import { usePolygonDraw } from '../hooks/usePolygonDraw';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { usePlanStore } from '../stores/planStore';
+import { generateRandom } from '../algorithms/random';
+import { generateGrid } from '../algorithms/grid';
+import { generateClustered } from '../algorithms/clustered';
+import { generateW } from '../algorithms/w';
 
 const DEFAULT_CENTER = { lng: -98.5, lat: 39.8 };
 
@@ -44,9 +48,39 @@ function useCoarseLocation() {
 export default function PlanView() {
   const isMobile = useIsMobile();
   const [showShare, setShowShare] = useState(false);
+  const [warning, setWarning] = useState<string | null>(null);
   const draw = usePolygonDraw();
   const { center, status } = useCoarseLocation();
   const pointCount = usePlanStore((s) => s.points.length);
+  const params = usePlanStore((s) => s.params);
+  const storePolygon = usePlanStore((s) => s.polygon);
+  const setPoints = usePlanStore((s) => s.setPoints);
+
+  const handleGenerate = () => {
+    if (!storePolygon) return;
+    let pts;
+    switch (params.type) {
+      case 'grid':
+        pts = generateGrid(storePolygon, params.count, params.minDistance);
+        break;
+      case 'clustered':
+        pts = generateClustered(storePolygon, params.count, params.minDistance, params.clusterCount ?? 3, params.minClusterDistance ?? 150);
+        break;
+      case 'w':
+        pts = generateW(storePolygon, params.count, params.minDistance);
+        break;
+      default:
+        pts = generateRandom(storePolygon, params.count, params.minDistance);
+    }
+    setPoints(pts);
+    if (pts.length < params.count) {
+      setWarning(
+        `Only ${pts.length} of ${params.count} points could be placed. Try reducing the minimum distance or the number of points.`
+      );
+    } else {
+      setWarning(null);
+    }
+  };
 
   if (isMobile) {
     return (
@@ -107,17 +141,40 @@ export default function PlanView() {
         <CalendarStrip />
       </div>
 
-      {/* Share FAB */}
-      <button
-        onClick={() => setShowShare(true)}
-        disabled={pointCount === 0}
-        className="absolute bottom-4 right-4 z-20 flex items-center justify-center w-14 h-14 rounded-full bg-emerald-600 text-white shadow-lg hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
-        aria-label="Share plan"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12" />
-        </svg>
-      </button>
+      {/* FAB group (bottom-right) */}
+      <div className="absolute bottom-4 right-4 z-20 flex items-center gap-3">
+        {/* Generate FAB */}
+        <button
+          onClick={handleGenerate}
+          disabled={!storePolygon}
+          className="flex items-center gap-2 px-5 h-14 rounded-full bg-brand text-white shadow-lg hover:bg-brand-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 text-sm font-semibold"
+          aria-label="Generate points"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+          </svg>
+          Generate Points
+        </button>
+
+        {/* Share FAB */}
+        <button
+          onClick={() => setShowShare(true)}
+          disabled={pointCount === 0}
+          className="flex items-center justify-center w-14 h-14 rounded-full bg-emerald-600 text-white shadow-lg hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+          aria-label="Share plan"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Generate warning toast */}
+      {warning && (
+        <div className="absolute bottom-20 right-4 z-20 max-w-xs bg-amber-50 border border-amber-200 text-amber-800 rounded-xl px-3 py-2 text-xs leading-relaxed shadow-lg">
+          {warning}
+        </div>
+      )}
 
       {showShare && <ShareDialog onClose={() => setShowShare(false)} />}
     </div>
