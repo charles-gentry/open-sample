@@ -104,16 +104,6 @@ export default function ParameterPanel({
         open={configOpen}
         onToggle={() => setConfigOpen((v) => !v)}
       >
-        <FormField label="Plan Name">
-          <input
-            type="text"
-            className={fieldClass}
-            value={params.name}
-            onChange={(e) => setParams({ name: e.target.value })}
-            placeholder="My sampling plan"
-          />
-        </FormField>
-
         <FormField label="Number of Points (1-99)">
           <input
             type="number"
