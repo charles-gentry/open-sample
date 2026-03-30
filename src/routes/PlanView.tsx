@@ -5,6 +5,7 @@ import CalendarStrip from '../components/planning/CalendarStrip';
 import ShareDialog from '../components/planning/ShareDialog';
 import { usePolygonDraw } from '../hooks/usePolygonDraw';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { usePlanStore } from '../stores/planStore';
 
 const DEFAULT_CENTER = { lng: -98.5, lat: 39.8 };
 
@@ -45,6 +46,7 @@ export default function PlanView() {
   const [showShare, setShowShare] = useState(false);
   const draw = usePolygonDraw();
   const { center, status } = useCoarseLocation();
+  const pointCount = usePlanStore((s) => s.points.length);
 
   if (isMobile) {
     return (
@@ -91,7 +93,6 @@ export default function PlanView() {
       {/* Floating ParameterPanel */}
       <div className="absolute top-4 right-4 bottom-52 z-20 w-80 overflow-y-auto">
         <ParameterPanel
-          onShare={() => setShowShare(true)}
           isDrawing={draw.isDrawing}
           vertices={draw.vertices}
           polygon={draw.polygon}
@@ -105,6 +106,18 @@ export default function PlanView() {
       <div className="absolute bottom-4 left-0 z-20">
         <CalendarStrip />
       </div>
+
+      {/* Share FAB */}
+      <button
+        onClick={() => setShowShare(true)}
+        disabled={pointCount === 0}
+        className="absolute bottom-4 right-4 z-20 flex items-center justify-center w-14 h-14 rounded-full bg-emerald-600 text-white shadow-lg hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
+        aria-label="Share plan"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12" />
+        </svg>
+      </button>
 
       {showShare && <ShareDialog onClose={() => setShowShare(false)} />}
     </div>
