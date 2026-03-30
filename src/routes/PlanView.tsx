@@ -132,7 +132,8 @@ export default function PlanView() {
           value={params.name}
           onChange={(e) => setParams({ name: e.target.value })}
           placeholder="My Sampling Plan"
-          className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200/60 px-5 py-2 text-center text-lg font-bold text-slate-800 tracking-tight placeholder:text-slate-400 placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition-all duration-150 min-w-[200px] max-w-[400px]"
+          className="bg-transparent border border-transparent rounded-2xl px-5 py-2 text-center text-lg font-bold text-slate-800 tracking-tight placeholder:text-slate-400 placeholder:font-normal focus:outline-none focus:bg-white/90 focus:backdrop-blur-md focus:shadow-lg focus:border-slate-200/60 focus:ring-2 focus:ring-brand/40 transition-all duration-150 min-w-[200px] max-w-[400px]"
+          style={{ textShadow: '0 1px 3px rgba(255,255,255,0.8)' }}
         />
       </div>
 
