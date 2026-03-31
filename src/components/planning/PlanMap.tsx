@@ -1,7 +1,8 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import Map, { Source, Layer } from 'react-map-gl/maplibre';
 import type { MapLayerMouseEvent, MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import * as turf from '@turf/turf';
 import { usePlanStore } from '../../stores/planStore';
 
 interface PlanMapProps {
@@ -26,7 +27,20 @@ export default function PlanMap({
   initialCenter,
 }: PlanMapProps) {
   const points = usePlanStore((s) => s.points);
+  const polygon = usePlanStore((s) => s.polygon);
+  const bufferDistance = usePlanStore((s) => s.params.bufferDistance);
   const mapRef = useRef<MapRef>(null);
+
+  const bufferGeoJson: GeoJSON.FeatureCollection = useMemo(() => {
+    if (!polygon || bufferDistance <= 0) {
+      return { type: 'FeatureCollection', features: [] };
+    }
+    const buffered = turf.buffer(polygon, -bufferDistance / 1000, { units: 'kilometers' });
+    if (!buffered || !buffered.geometry) {
+      return { type: 'FeatureCollection', features: [] };
+    }
+    return { type: 'FeatureCollection', features: [buffered] };
+  }, [polygon, bufferDistance]);
 
   const onLoad = useCallback(() => {
     if (!navigator.geolocation) return;
@@ -98,6 +112,19 @@ export default function PlanMap({
             id="polygon-outline-layer"
             type="line"
             paint={{ 'line-color': '#3b82f6', 'line-width': 2 }}
+          />
+        </Source>
+
+        {/* Buffered polygon (inner boundary) */}
+        <Source id="buffer-polygon" type="geojson" data={bufferGeoJson}>
+          <Layer
+            id="buffer-polygon-outline"
+            type="line"
+            paint={{
+              'line-color': '#f59e0b',
+              'line-width': 2,
+              'line-dasharray': [4, 3],
+            }}
           />
         </Source>
 

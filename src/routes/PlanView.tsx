@@ -6,6 +6,7 @@ import ShareDialog from '../components/planning/ShareDialog';
 import { usePolygonDraw } from '../hooks/usePolygonDraw';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { usePlanStore } from '../stores/planStore';
+import * as turf from '@turf/turf';
 import { generateRandom } from '../algorithms/random';
 import { generateGrid } from '../algorithms/grid';
 import { generateClustered } from '../algorithms/clustered';
@@ -59,24 +60,37 @@ export default function PlanView() {
 
   const handleGenerate = () => {
     if (!storePolygon) return;
+
+    // Apply internal buffer if specified
+    let effectivePolygon: GeoJSON.Feature<GeoJSON.Polygon> = storePolygon;
+    if (params.bufferDistance > 0) {
+      const buffered = turf.buffer(storePolygon, -params.bufferDistance / 1000, { units: 'kilometers' });
+      if (!buffered || !buffered.geometry || (buffered.geometry.type === 'Polygon' && buffered.geometry.coordinates.length === 0)) {
+        setWarning('Buffer distance is too large for this polygon. Reduce the buffer or enlarge the area.');
+        setPoints([]);
+        return;
+      }
+      effectivePolygon = buffered as GeoJSON.Feature<GeoJSON.Polygon>;
+    }
+
     let pts;
     switch (params.type) {
       case 'grid':
-        pts = generateGrid(storePolygon, params.count, params.minDistance);
+        pts = generateGrid(effectivePolygon, params.count, params.minDistance);
         break;
       case 'clustered':
-        pts = generateClustered(storePolygon, params.count, params.minDistance, params.clusterCount ?? 3, params.minClusterDistance ?? 150);
+        pts = generateClustered(effectivePolygon, params.count, params.minDistance, params.clusterCount ?? 3, params.minClusterDistance ?? 150);
         break;
       case 'w':
-        pts = generateW(storePolygon, params.count, params.minDistance);
+        pts = generateW(effectivePolygon, params.count, params.minDistance);
         break;
       default:
-        pts = generateRandom(storePolygon, params.count, params.minDistance);
+        pts = generateRandom(effectivePolygon, params.count, params.minDistance);
     }
     setPoints(pts);
     if (pts.length < params.count) {
       setWarning(
-        `Only ${pts.length} of ${params.count} points could be placed. Try reducing the minimum distance or the number of points.`
+        `Only ${pts.length} of ${params.count} points could be placed. Try reducing the minimum distance, buffer, or the number of points.`
       );
     } else {
       setWarning(null);
