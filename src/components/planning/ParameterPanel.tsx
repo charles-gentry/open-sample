@@ -93,6 +93,16 @@ export default function ParameterPanel({
           </p>
         )}
         <KmlUploader />
+
+        <FormField label="Buffer Distance (meters)">
+          <input
+            type="number"
+            className={fieldClass}
+            min={0}
+            value={params.bufferDistance}
+            onChange={(e) => setParams({ bufferDistance: Math.max(0, +e.target.value) })}
+          />
+        </FormField>
       </CollapsibleSection>
 
       <hr className="border-slate-200/60" />

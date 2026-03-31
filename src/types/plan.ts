@@ -5,6 +5,7 @@ export interface SamplingParams {
   count: number;
   type: SamplingType;
   minDistance: number; // meters
+  bufferDistance: number; // meters – internal buffer where no points are placed
   clusterCount?: number; // only used when type === 'clustered'
   minClusterDistance?: number; // only used when type === 'clustered'
 }
