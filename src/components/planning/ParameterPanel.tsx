@@ -54,8 +54,6 @@ export default function ParameterPanel({
 
   return (
     <div className="flex flex-col gap-3 p-5 bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/60">
-      <h2 className="text-sm font-bold text-slate-800 uppercase tracking-widest">Sampling Parameters</h2>
-
       {/* Section 1: Define Area */}
       <CollapsibleSection
         title="Define Area"
