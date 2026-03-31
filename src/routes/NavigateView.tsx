@@ -179,7 +179,7 @@ export default function NavigateView() {
         {dist !== null && <DistanceDisplay meters={dist} />}
         {target && (
           <p className="text-sm text-slate-400 font-medium">
-            Point {target.id + 1} of {points.length}
+            Point {target.id + 1}
           </p>
         )}
       </div>
