@@ -88,7 +88,7 @@ export default function CalendarStrip() {
     <button
       type="button"
       onClick={() => setExpanded((v) => !v)}
-      className="flex-shrink-0 w-8 bg-white/90 backdrop-blur-md rounded-r-2xl shadow-2xl border border-l-0 border-slate-200/60 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+      className="flex-shrink-0 w-8 bg-brand backdrop-blur-md rounded-r-2xl shadow-2xl border border-l-0 border-brand flex items-center justify-center text-white hover:text-white/80 transition-colors cursor-pointer"
       aria-label={expanded ? 'Collapse weather panel' : 'Expand weather panel'}
     >
       <svg
@@ -105,7 +105,7 @@ export default function CalendarStrip() {
     </button>
   );
 
-  const panelWidthClass = expanded ? 'w-[calc(100vw-23rem)]' : 'w-0';
+  const panelWidthClass = expanded ? 'w-[calc(100vw-25rem)]' : 'w-0';
 
   if (!polygon) {
     return (
@@ -113,7 +113,7 @@ export default function CalendarStrip() {
         <div className={`overflow-hidden transition-[width] duration-300 ease-in-out ${panelWidthClass}`}>
           <div
             className="h-[310px] bg-white/90 backdrop-blur-md shadow-2xl border border-l-0 border-slate-200/60 flex items-center justify-center text-sm text-slate-400"
-            style={{ minWidth: 'calc(100vw - 23rem)' }}
+            style={{ minWidth: 'calc(100vw - 25rem)' }}
           >
             Draw a polygon to see weather forecast and satellite passes
           </div>
@@ -128,7 +128,7 @@ export default function CalendarStrip() {
       <div className={`overflow-hidden transition-[width] duration-300 ease-in-out ${panelWidthClass}`}>
         <div
           className="bg-white/90 backdrop-blur-md shadow-2xl border border-l-0 border-slate-200/60 overflow-hidden h-[310px]"
-          style={{ minWidth: 'calc(100vw - 23rem)' }}
+          style={{ minWidth: 'calc(100vw - 25rem)' }}
         >
           <div className="flex items-center gap-3 px-4 py-2.5 border-b border-slate-100/80">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">14-Day Forecast</span>
