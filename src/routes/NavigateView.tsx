@@ -12,6 +12,7 @@ import PointProgress from '../components/navigation/PointProgress';
 import MarkCompleteButton from '../components/navigation/MarkCompleteButton';
 import CompletionNotice from '../components/navigation/CompletionNotice';
 import NavMiniMap from '../components/navigation/NavMiniMap';
+import ExportMenu from '../components/navigation/ExportMenu';
 
 
 export default function NavigateView() {
@@ -19,7 +20,7 @@ export default function NavigateView() {
   const {
     planName,
     points,
-    completedIds,
+    completions,
     currentTargetId,
     setPlan,
     markComplete,
@@ -28,6 +29,13 @@ export default function NavigateView() {
   const { position, error: geoError } = useGeolocation();
   const { heading, needsPermission, requestPermission } = useCompass();
   const [targetDate, setTargetDate] = useState<string | null>(null);
+  const [showExport, setShowExport] = useState(false);
+
+  // Derive completedIds Set for child components that don't need full records
+  const completedIds = useMemo(
+    () => new Set(completions.keys()),
+    [completions]
+  );
 
   // Decode plan from URL
   useEffect(() => {
@@ -111,10 +119,10 @@ export default function NavigateView() {
   }, [bearingToTarget, heading]);
 
   const handleMarkComplete = useCallback(() => {
-    if (currentTargetId !== null) {
-      markComplete(currentTargetId);
+    if (currentTargetId !== null && position) {
+      markComplete(currentTargetId, position);
     }
-  }, [currentTargetId, markComplete]);
+  }, [currentTargetId, markComplete, position]);
 
   const centroid = useMemo(() => {
     if (points.length === 0) return null;
@@ -148,9 +156,29 @@ export default function NavigateView() {
   return (
     <div className="flex flex-col h-full bg-surface p-4 gap-4 safe-area-inset">
       {planName && (
-        <h2 className="text-base font-bold text-slate-800 text-center tracking-tight">
-          {planName}
-        </h2>
+        <div className="flex items-center justify-center gap-2">
+          <h2 className="text-base font-bold text-slate-800 tracking-tight">
+            {planName}
+          </h2>
+          {completions.size > 0 && (
+            <button
+              onClick={() => setShowExport((v) => !v)}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+              aria-label="Export data"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
+                <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
+              </svg>
+            </button>
+          )}
+        </div>
+      )}
+
+      {showExport && (
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+          <ExportMenu />
+        </div>
       )}
 
       {isOffTargetDate && (
@@ -189,6 +217,7 @@ export default function NavigateView() {
       <MarkCompleteButton
         onMark={handleMarkComplete}
         isNear={dist !== null && dist < 5}
+        disabled={!position}
       />
 
       <NavMiniMap
