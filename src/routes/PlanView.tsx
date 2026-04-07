@@ -100,10 +100,21 @@ export default function PlanView() {
   if (isMobile) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center bg-surface">
-        <h2 className="text-xl font-semibold text-slate-800">Desktop Only</h2>
+        <h2 className="text-xl font-semibold text-slate-800">Plan Mode Requires a Larger Screen</h2>
         <p className="text-slate-500 max-w-sm">
-          Planning is designed for desktop. Open this page on a computer to draw
-          your sampling area and generate points.
+          Drawing sampling areas and placing points isn't optimal on a small screen.
+          Please open this page on a desktop or tablet in landscape mode for the best experience.
+        </p>
+        <p className="text-slate-400 text-sm max-w-sm">
+          Want mobile plan mode? You can request it by{" "}
+          <a
+            href="https://github.com/charles-gentry/open-sample/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline text-brand hover:text-brand-dark"
+          >
+            creating an issue on GitHub
+          </a>.
         </p>
       </div>
     );
