@@ -1,3 +1,5 @@
+import ExportMenu from './ExportMenu';
+
 export default function CompletionNotice({
   planName,
   total,
@@ -13,6 +15,10 @@ export default function CompletionNotice({
         You completed all {total} sampling points
         {planName ? ` for "${planName}"` : ''}.
       </p>
+      <div className="w-full max-w-xs">
+        <p className="text-sm font-semibold text-slate-700 mb-3">Export Results</p>
+        <ExportMenu />
+      </div>
     </div>
   );
 }
