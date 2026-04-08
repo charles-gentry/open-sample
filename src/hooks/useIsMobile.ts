@@ -1,3 +1,5 @@
 export function useIsMobile(): boolean {
-  return window.navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches;
+  const isSmallScreen = window.innerWidth < 1024;
+  const isTouchDevice = window.navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches;
+  return isSmallScreen && isTouchDevice;
 }
