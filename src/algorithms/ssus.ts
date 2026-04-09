@@ -36,19 +36,19 @@ export function generateSSUS(
 
   const { minLng, minLat, cols, rows, cellW, cellH } = grid;
 
-  // SSUS: x-offset varies per ROW, y-offset varies per COLUMN.
-  // This breaks alignment — points in the same column get different x-offsets
-  // (one per row) and points in the same row get different y-offsets (one per column).
-  const xOffsets = Array.from({ length: rows }, () => Math.random() * cellW);
-  const yOffsets = Array.from({ length: cols }, () => Math.random() * cellH);
+  // SSUS: first cell gets random (x, y). First row sets a random x-offset per
+  // column; first column sets a random y-offset per row. Every other cell uses
+  // its column's x-offset and its row's y-offset.
+  const xOffsets = Array.from({ length: cols }, () => Math.random() * cellW);
+  const yOffsets = Array.from({ length: rows }, () => Math.random() * cellH);
 
   const points: SamplingPoint[] = [];
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       const candidate: SamplingPoint = {
-        lng: minLng + j * cellW + xOffsets[i],
-        lat: minLat + i * cellH + yOffsets[j],
+        lng: minLng + j * cellW + xOffsets[j],
+        lat: minLat + i * cellH + yOffsets[i],
       };
 
       if (
