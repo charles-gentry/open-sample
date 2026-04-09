@@ -1,4 +1,4 @@
-export type SamplingType = 'random' | 'grid' | 'clustered' | 'w';
+export type SamplingType = 'random' | 'grid' | 'clustered' | 'w' | 'ssus';
 
 export interface SamplingParams {
   name: string;
@@ -25,6 +25,6 @@ export interface SharePayload {
   v: 1;
   n: string;
   p: [number, number][]; // [lng, lat] pairs
-  t: 'r' | 'g' | 'c' | 'w';
+  t: 'r' | 'g' | 'c' | 'w' | 's';
   d?: string; // target sample date (ISO date string)
 }
