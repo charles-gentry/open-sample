@@ -19,6 +19,7 @@ const TYPE_LABELS: Record<SamplingType, string> = {
   grid: 'Grid',
   clustered: 'Clustered',
   w: 'W Pattern',
+  ssus: 'Stratified (SSUS)',
 };
 
 export default function ParameterPanel({
@@ -133,6 +134,7 @@ export default function ParameterPanel({
             <option value="grid">Grid</option>
             <option value="clustered">Clustered</option>
             <option value="w">W Pattern</option>
+            <option value="ssus">Stratified (SSUS)</option>
           </select>
         </FormField>
 

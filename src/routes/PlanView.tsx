@@ -11,6 +11,7 @@ import { generateRandom } from '../algorithms/random';
 import { generateGrid } from '../algorithms/grid';
 import { generateClustered } from '../algorithms/clustered';
 import { generateW } from '../algorithms/w';
+import { generateSSUS } from '../algorithms/ssus';
 
 const DEFAULT_CENTER = { lng: -98.5, lat: 39.8 };
 
@@ -83,6 +84,9 @@ export default function PlanView() {
         break;
       case 'w':
         pts = generateW(effectivePolygon, params.count, params.minDistance);
+        break;
+      case 'ssus':
+        pts = generateSSUS(effectivePolygon, params.count, params.minDistance);
         break;
       default:
         pts = generateRandom(effectivePolygon, params.count, params.minDistance);

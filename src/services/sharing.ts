@@ -1,11 +1,12 @@
 import { compress, decompress } from '../lib/compression';
 import type { SamplingPoint, SamplingType, SharePayload } from '../types/plan';
 
-const TYPE_MAP: Record<SamplingType, 'r' | 'g' | 'c' | 'w'> = {
+const TYPE_MAP: Record<SamplingType, 'r' | 'g' | 'c' | 'w' | 's'> = {
   random: 'r',
   grid: 'g',
   clustered: 'c',
   w: 'w',
+  ssus: 's',
 };
 
 const REVERSE_TYPE_MAP: Record<string, SamplingType> = {
@@ -13,6 +14,7 @@ const REVERSE_TYPE_MAP: Record<string, SamplingType> = {
   g: 'grid',
   c: 'clustered',
   w: 'w',
+  s: 'ssus',
 };
 
 export function encodePlan(

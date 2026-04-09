@@ -4,6 +4,7 @@ import type { MapLayerMouseEvent, MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import * as turf from '@turf/turf';
 import { usePlanStore } from '../../stores/planStore';
+import { buildSSUSGridLines } from '../../algorithms/ssus';
 
 interface PlanMapProps {
   isDrawing: boolean;
@@ -28,8 +29,16 @@ export default function PlanMap({
 }: PlanMapProps) {
   const points = usePlanStore((s) => s.points);
   const polygon = usePlanStore((s) => s.polygon);
-  const bufferDistance = usePlanStore((s) => s.params.bufferDistance);
+  const params = usePlanStore((s) => s.params);
+  const bufferDistance = params.bufferDistance;
   const mapRef = useRef<MapRef>(null);
+
+  const gridLinesGeoJson: GeoJSON.FeatureCollection = useMemo(() => {
+    if (!polygon || params.type !== 'ssus' || points.length === 0) {
+      return { type: 'FeatureCollection', features: [] };
+    }
+    return buildSSUSGridLines(polygon, params.count);
+  }, [polygon, params.type, params.count, points.length]);
 
   const bufferGeoJson: GeoJSON.FeatureCollection = useMemo(() => {
     if (!polygon || bufferDistance <= 0) {
@@ -124,6 +133,20 @@ export default function PlanMap({
               'line-color': '#f59e0b',
               'line-width': 2,
               'line-dasharray': [4, 3],
+            }}
+          />
+        </Source>
+
+        {/* SSUS grid lines */}
+        <Source id="ssus-grid" type="geojson" data={gridLinesGeoJson}>
+          <Layer
+            id="ssus-grid-lines"
+            type="line"
+            paint={{
+              'line-color': '#94a3b8',
+              'line-width': 1,
+              'line-opacity': 0.5,
+              'line-dasharray': [3, 2],
             }}
           />
         </Source>
