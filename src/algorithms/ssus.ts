@@ -17,25 +17,28 @@ export function generateSSUS(
 
   if (widthM === 0 || heightM === 0) return [];
 
-  // Determine grid dimensions so rows * cols ≈ count, respecting aspect ratio
+  // Oversample: polygon may cover only a fraction of its bounding box
+  const bboxArea = widthM * heightM;
+  const polyArea = turf.area(polygon);
+  const coverage = Math.max(0.1, Math.min(1, polyArea / bboxArea));
+  const targetCells = Math.ceil(count / coverage);
+
+  // Determine grid dimensions so rows * cols ≈ targetCells, respecting aspect ratio
   const aspect = widthM / heightM;
-  let cols = Math.max(1, Math.round(Math.sqrt(count * aspect)));
-  let rows = Math.max(1, Math.round(count / cols));
+  const cols = Math.max(1, Math.round(Math.sqrt(targetCells * aspect)));
+  const rows = Math.max(1, Math.round(targetCells / cols));
 
   const cellW = (maxLng - minLng) / cols;
   const cellH = (maxLat - minLat) / rows;
 
-  // Generate one random x-offset per column and one random y-offset per row
-  const xOffsets = Array.from({ length: cols }, () => Math.random() * cellW);
-  const yOffsets = Array.from({ length: rows }, () => Math.random() * cellH);
-
+  // Place one independently random point per cell (stratified random within each stratum)
   const points: SamplingPoint[] = [];
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       const candidate: SamplingPoint = {
-        lng: minLng + j * cellW + xOffsets[j],
-        lat: minLat + i * cellH + yOffsets[i],
+        lng: minLng + j * cellW + Math.random() * cellW,
+        lat: minLat + i * cellH + Math.random() * cellH,
       };
 
       if (
@@ -43,9 +46,10 @@ export function generateSSUS(
         satisfiesMinDistance(candidate, points, minDistance)
       ) {
         points.push(candidate);
+        if (points.length >= count) return points;
       }
     }
   }
 
-  return points.slice(0, count);
+  return points;
 }
