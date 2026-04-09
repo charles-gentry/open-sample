@@ -77,7 +77,7 @@ export default function PlanView() {
     let pts;
     switch (params.type) {
       case 'grid':
-        pts = generateGrid(effectivePolygon, params.count, params.minDistance);
+        pts = generateGrid(effectivePolygon, params.count);
         break;
       case 'clustered':
         pts = generateClustered(effectivePolygon, params.count, params.minDistance, params.clusterCount ?? 3, params.minClusterDistance ?? 150);
@@ -86,7 +86,7 @@ export default function PlanView() {
         pts = generateW(effectivePolygon, params.count, params.minDistance);
         break;
       case 'ssus':
-        pts = generateSSUS(effectivePolygon, params.count, params.minDistance);
+        pts = generateSSUS(effectivePolygon, params.count);
         break;
       default:
         pts = generateRandom(effectivePolygon, params.count, params.minDistance);

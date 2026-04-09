@@ -1,6 +1,6 @@
 import * as turf from '@turf/turf';
 import type { SamplingPoint } from '../types/plan';
-import { isInsidePolygon, satisfiesMinDistance } from './common';
+import { isInsidePolygon } from './common';
 
 function computeGrid(polygon: GeoJSON.Feature<GeoJSON.Polygon>, count: number) {
   const [minLng, minLat, maxLng, maxLat] = turf.bbox(polygon);
@@ -26,8 +26,7 @@ function computeGrid(polygon: GeoJSON.Feature<GeoJSON.Polygon>, count: number) {
 
 export function generateSSUS(
   polygon: GeoJSON.Feature<GeoJSON.Polygon>,
-  count: number,
-  minDistance: number
+  count: number
 ): SamplingPoint[] {
   if (count <= 0) return [];
 
@@ -51,10 +50,7 @@ export function generateSSUS(
         lat: minLat + i * cellH + yOffsets[j],
       };
 
-      if (
-        isInsidePolygon(candidate, polygon) &&
-        satisfiesMinDistance(candidate, points, minDistance)
-      ) {
+      if (isInsidePolygon(candidate, polygon)) {
         points.push(candidate);
         if (points.length >= count) return points;
       }

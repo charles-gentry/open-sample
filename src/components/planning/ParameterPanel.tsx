@@ -162,15 +162,17 @@ export default function ParameterPanel({
           </FormField>
         )}
 
-        <FormField label="Min Distance (meters)">
-          <input
-            type="number"
-            className={fieldClass}
-            min={0}
-            value={params.minDistance}
-            onChange={(e) => setParams({ minDistance: Math.max(0, +e.target.value) })}
-          />
-        </FormField>
+        {params.type !== 'grid' && params.type !== 'ssus' && (
+          <FormField label="Min Distance (meters)">
+            <input
+              type="number"
+              className={fieldClass}
+              min={0}
+              value={params.minDistance}
+              onChange={(e) => setParams({ minDistance: Math.max(0, +e.target.value) })}
+            />
+          </FormField>
+        )}
       </CollapsibleSection>
     </div>
   );
