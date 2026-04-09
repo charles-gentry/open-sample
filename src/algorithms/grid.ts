@@ -3,12 +3,10 @@ import type { SamplingPoint } from '../types/plan';
 
 export function generateGrid(
   polygon: GeoJSON.Feature<GeoJSON.Polygon>,
-  count: number,
-  minDistance: number
+  count: number
 ): SamplingPoint[] {
   const area = turf.area(polygon);
   let cellSize = Math.sqrt(area / count);
-  cellSize = Math.max(cellSize, minDistance);
 
   // Iteratively adjust cell size to converge on target count
   for (let iteration = 0; iteration < 10; iteration++) {
