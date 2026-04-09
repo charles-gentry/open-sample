@@ -17,7 +17,8 @@ export function generateSSUS(
 
   if (widthM === 0 || heightM === 0) return [];
 
-  // Oversample: polygon may cover only a fraction of its bounding box
+  // Oversample: polygon may cover only a fraction of its bounding box,
+  // so create more cells than count to ensure enough survive filtering
   const bboxArea = widthM * heightM;
   const polyArea = turf.area(polygon);
   const coverage = Math.max(0.1, Math.min(1, polyArea / bboxArea));
@@ -31,14 +32,18 @@ export function generateSSUS(
   const cellW = (maxLng - minLng) / cols;
   const cellH = (maxLat - minLat) / rows;
 
-  // Place one independently random point per cell (stratified random within each stratum)
+  // SSUS: one random x-offset per column, one random y-offset per row.
+  // Points in the same column share an x-offset; points in the same row share a y-offset.
+  const xOffsets = Array.from({ length: cols }, () => Math.random() * cellW);
+  const yOffsets = Array.from({ length: rows }, () => Math.random() * cellH);
+
   const points: SamplingPoint[] = [];
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       const candidate: SamplingPoint = {
-        lng: minLng + j * cellW + Math.random() * cellW,
-        lat: minLat + i * cellH + Math.random() * cellH,
+        lng: minLng + j * cellW + xOffsets[j],
+        lat: minLat + i * cellH + yOffsets[i],
       };
 
       if (
