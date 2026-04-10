@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import Map, { Source, Layer } from 'react-map-gl/maplibre';
 import type { MapLayerMouseEvent, MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -32,6 +32,18 @@ export default function PlanMap({
   const params = usePlanStore((s) => s.params);
   const bufferDistance = params.bufferDistance;
   const mapRef = useRef<MapRef>(null);
+
+  useEffect(() => {
+    if (!polygon) return;
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
+    const [west, south, east, north] = turf.bbox(polygon);
+    map.fitBounds(
+      [[west, south], [east, north]],
+      { padding: 80, duration: 1000 }
+    );
+  }, [polygon]);
 
   const gridLinesGeoJson: GeoJSON.FeatureCollection = useMemo(() => {
     if (!polygon || params.type !== 'ssus' || points.length === 0) {
